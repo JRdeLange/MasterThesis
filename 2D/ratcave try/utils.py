@@ -1,6 +1,4 @@
 #https://stackoverflow.com/questions/54188353/how-do-i-make-3d-in-pyglet
-#https://github.com/01AutoMonkey/open.gl-tutorials-to-pyglet
-
 import math
 
 

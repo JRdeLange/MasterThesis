@@ -1,18 +1,40 @@
 import pyglet
-from pyglet.gl import *
 from utils import Utils
+from shaders import Shaders
+import ratcave as rc
 
 class Renderer:
     batch = pyglet.graphics.Batch()
+    obj_reader = rc.WavefrontReader("boid.obj")
+    model = rc.WavefrontReader("boid.obj").get_mesh("Boid")
+    model.position.xyz = 0, 0, -2
+    print(model.model_matrix)
+    model.model_matrix = [[1., 0., 0., 0.], [0., 1., 0., 0.], [0., 0., 1., -2.], [0., 0., 0., 1.]]
+    print(model.model_matrix)
+    #model.uniforms["model_matrix"] = model.model_matrix#[[1., 0., 0., 0.], [0., 1., 0., -0.425], [0., 0., 1., 0.], [0., 0., 0., 1.]]
+    scene = None
+    shaders = Shaders()
 
     def __init__(self, world, w, h):
         self.window = pyglet.window.Window()
         self.world = world
+        self.create_scene()
 
         @self.window.event
         def on_draw():
             self.window.clear()
-            self.render_boids()
+            #self.render_boids()
+            #self.model.rotation.x += 1
+            with self.shaders.basic_shader:
+                self.scene.draw()
+
+    def create_scene(self):
+        meshes = [self.model]
+        #for boid in self.world.get_boids():
+        #    meshes.append(boid.model)
+        print(len(meshes))
+        self.scene = rc.Scene(meshes = meshes)
+
 
     def render_boids(self):
         coords = []

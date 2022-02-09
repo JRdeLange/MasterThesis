@@ -1,6 +1,5 @@
 import random
 import math
-import ratcave as rc
 from utils import Utils
 
 
@@ -11,9 +10,7 @@ class Boid:
         self.x = random.randrange(0, size)
         self.y = random.randrange(0, size)
         self.direction = random.uniform(-math.pi, math.pi)
-        self.model = rc.WavefrontReader("boid.obj").get_mesh("Boid")
-        self.model.scale = 0.1
-        self.model.position.xyz = (random.uniform(-1, 1), random.uniform(-1, 1), -2)
+
 
     def move(self):
         x, y = Utils.radians_to_vec(self.direction)

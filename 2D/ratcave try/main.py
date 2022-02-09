@@ -16,7 +16,7 @@ def main_loop():
 
         keys = pyglet.window.key.KeyStateHandler()
 
-        #world.tick()
+        world.tick()
 
         pyglet.clock.tick()
 

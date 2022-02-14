@@ -18,3 +18,23 @@ class Utils:
     def radians_to_vec(r):
         return math.sin(r), math.cos(r)
 
+    @staticmethod
+    def get_scale_matrix(x=1, y=1, z=1):
+        return ((float(x), 0., 0., 0.),
+                (0., float(y), 0., 0.),
+                (0., 0., float(z), 0.),
+                (0., 0., 0., 1.))
+
+    @staticmethod
+    def get_translate_matrix(x=0, y=0, z=0):
+        return ((1., 0., 0., float(x)),
+                (0., 1., 0., float(y)),
+                (0., 0., 1., float(z)),
+                (0., 0., 0., 1.))
+
+    @staticmethod
+    def get_identity_matrix():
+        return ((1., 0., 0., 0.),
+                (0., 1., 0., 0.),
+                (0., 0., 1., 0.),
+                (0., 0., 0., 1.))

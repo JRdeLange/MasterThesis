@@ -21,16 +21,14 @@ class Renderer:
         self.shader_program = None
         self.pos_attrib_loc = None
 
-        #self.gen_buffers()
-        #self.bind_buffers()
-        #self.buffer_data(self.triangle)
+        self.gen_buffers()
+        self.bind_buffers()
+        self.buffer_data(self.triangle)
         self.tris = pyglet.graphics.vertex_list(3,
-                                                ('v2f', (0, 1, -1, -1, 1, -1)))
-        #self.load_shaders()
-        self.shader_program = ps.from_string(Shaders.basic_vert_shader, Shaders.basic_frag_shader)
+                                                ('v2f', (0, 0.5, -0.5, -0.5, 0.5, -0.5)))
+        self.load_shaders()
+        #self.shader_program = ps.from_string(Shaders.basic_vert_shader, Shaders.basic_frag_shader)
         self.shader_program.use()
-        self.shader_program.uniforms.trans = Utils.get_translate_matrix(0.2, 0.5)
-        print(self.shader_program.uniforms)
 
         #self.set_basic_shaders()
         #self.manage_attrib_locations()

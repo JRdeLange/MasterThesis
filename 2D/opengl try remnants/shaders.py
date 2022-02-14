@@ -5,12 +5,10 @@ class Shaders:
     #version 330
 
     in vec2 pos;
-    
-    uniform mat4 trans;
 
     void main()
     {
-        gl_Position = trans * vec4(pos, 0.0, 1.0);
+        gl_Position = vec4(pos, 0.0, 1.0);
     }
     """
 

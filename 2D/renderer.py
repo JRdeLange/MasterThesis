@@ -1,7 +1,10 @@
+import math
+
 import pyglet
 from pyglet.gl import *
 from utils import Utils
-from ctypes import *
+from world import World
+from boid import Boid
 from shaders import Shaders
 import pyshaders as ps
 
@@ -12,50 +15,22 @@ class Renderer:
     def __init__(self, world, w, h):
         self.window = pyglet.window.Window()
         self.world = world
-        self.triangle = [0, 0.5,
-                         -0.5, -0.5,
-                         0.5, -0.5]
-        self.vbo = GLuint()
-        self.vao = GLuint()
+        self.boid_model = pyglet.graphics.vertex_list(3, ('v2f', (0, 1, -0.5, -1, 0.5, -1)))
+        self.boid_model_matrices = []
 
         self.shader_program = None
-        self.pos_attrib_loc = None
-
-        #self.gen_buffers()
-        #self.bind_buffers()
-        #self.buffer_data(self.triangle)
-        self.tris = pyglet.graphics.vertex_list(3,
-                                                ('v2f', (0, 1, -1, -1, 1, -1)))
-        #self.load_shaders()
         self.shader_program = ps.from_string(Shaders.basic_vert_shader, Shaders.basic_frag_shader)
         self.shader_program.use()
-        self.shader_program.uniforms.trans = Utils.get_translate_matrix(0.2, 0.5)
-        print(self.shader_program.uniforms)
-
-        #self.set_basic_shaders()
-        #self.manage_attrib_locations()
 
         @self.window.event
         def on_draw():
-            #glClearColor(0.1, 0.1, 0.1, 1.0)
-            #glClear(GL_COLOR_BUFFER_BIT)
+            glClearColor(0.1, 0.1, 0.1, 1.0)
+            glClear(GL_COLOR_BUFFER_BIT)
             #self.opengl_render()
-            self.render()
+            self.render_boids()
 
     def render(self):
-        self.tris.draw(GL_TRIANGLES)
-
-    def opengl_render(self):
-        glDrawArrays(GL_TRIANGLES, 0, 3)
-
-
-    def gen_buffers(self):
-        glGenBuffers(1, pointer(self.vbo))
-        glGenVertexArrays(1, pointer(self.vao))
-
-    def bind_buffers(self):
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
-        glBindVertexArray(self.vao)
+        self.boid_model.draw(GL_TRIANGLES)
 
     def load_shaders(self):
         try:
@@ -64,57 +39,18 @@ class Renderer:
             print(e.logs)
             exit()
 
-
-    def set_basic_shaders(self):
-        vert_shader_raw = Shaders.basic_vert_shader
-        vert_len = len(vert_shader_raw)
-        vert_shader_src = (c_char_p * vert_len)(*vert_shader_raw)
-        vert_shader = glCreateShader(GL_VERTEX_SHADER)
-        glShaderSource(vert_shader, vert_len, cast(pointer(vert_shader_src), POINTER(POINTER(c_char))), None)
-        glCompileShader(vert_shader)
-
-        frag_shader_raw = Shaders.basic_frag_shader
-        frag_len = len(frag_shader_raw)
-        frag_shader_src = (c_char_p * frag_len)(*frag_shader_raw)
-        frag_shader = glCreateShader(GL_FRAGMENT_SHADER)
-        glShaderSource(frag_shader, frag_len, cast(pointer(frag_shader_src), POINTER(POINTER(c_char))), None)
-        glCompileShader(frag_shader)
-
-        glAttachShader(self.shader_program, frag_shader)
-        glAttachShader(self.shader_program, vert_shader)
-        glLinkProgram(self.shader_program)
-
-        glUseProgram(self.shader_program)
-
-    def manage_attrib_locations(self):
-        self.pos_attrib_loc = glGetAttribLocation(self.shader_program, "pos")
-        glVertexAttribPointer(self.pos_attrib_loc, 2, GL_FLOAT, GL_FALSE, 0, 0)
-        glEnableVertexAttribArray(self.pos_attrib_loc)
-
-
-
-
-    def buffer_data(self, data):
-        data_gl = (GLfloat * len(data))(*data)
-        glBufferData(GL_ARRAY_BUFFER, sizeof(data_gl), data_gl, GL_STATIC_DRAW)
-
-
     def render_boids(self):
-        coords = []
+        self.boid_model_matrices = []
         for boid in self.world.get_boids():
-            x, y = Utils.world_to_screen(self, self.world, boid.x, boid.y)
-            coords.append(x)
-            coords.append(y)
-            coords.append(int(x - 5))
-            coords.append(int(y - 12))
-            coords.append(int(x))
-            coords.append(int(y - 9))
+            trans_x, trans_y = Utils.world_to_screen(self.world, boid.x, boid.y)
+            trans = Utils.translate(trans_x, trans_y)
+            scale = Utils.scale(0.05, 0.05)
+            rot = Utils.rotate(0, 0, -boid.rotation + math.pi/6)
+            mat = Utils.combine_matrices(trans, scale, rot)
+            self.boid_model_matrices.append(mat)
 
-            coords.append(x)
-            coords.append(y)
-            coords.append(int(x + 5))
-            coords.append(int(y - 12))
-            coords.append(int(x))
-            coords.append(int(y - 9))
+        for mat in self.boid_model_matrices:
+            self.shader_program.uniforms.model = mat
+            self.render()
 
-        pyglet.graphics.draw(int(len(coords) / 2), pyglet.gl.GL_TRIANGLES, ("v2f", tuple(coords)))
+

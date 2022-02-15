@@ -7,7 +7,7 @@ import pyglet
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     world = World(100)
-    world.gen_boids(500)
+    world.gen_boids(70)
     renderer = Renderer(world, 500, 500)
 
 
@@ -16,7 +16,7 @@ def main_loop():
 
         keys = pyglet.window.key.KeyStateHandler()
 
-        #world.tick()
+        world.tick()
 
         pyglet.clock.tick()
 

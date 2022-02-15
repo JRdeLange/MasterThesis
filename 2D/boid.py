@@ -1,5 +1,6 @@
 import random
 import math
+import numpy as np
 from utils import Utils
 
 
@@ -9,13 +10,14 @@ class Boid:
         self.size = size
         self.x = random.randrange(0, size)
         self.y = random.randrange(0, size)
-        self.direction = random.uniform(-math.pi, math.pi)
+        self.rotation = random.uniform(-math.pi, math.pi)
 
 
     def move(self):
-        x, y = Utils.radians_to_vec(self.direction)
-        self.x += x * 0.5
-        self.y += y * 0.5
+        x, y = Utils.radians_to_vec(self.rotation)
+        self.x += x + 0.001 * np.sign(x)
+        self.y += y + 0.001 * np.sign(y)
+        self.rotation += 0.05 + random.randrange(-1, 1) / 50.
         self.wrap()
 
     def wrap(self):

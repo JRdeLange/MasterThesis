@@ -5,6 +5,7 @@ from utils import Utils
 from environment import Environment
 import pyglet
 import time
+from scipy.spatial.transform import Rotation as Rot
 
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten
@@ -17,7 +18,8 @@ from rl.memory import SequentialMemory
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     world = World(100)
-    world.gen_boids(20)
+    print(Utils.world_to_render_spot(world, -.5, -.5, -.5))
+    world.gen_boids(10)
     graphics = True
     renderer = Renderer(world, 500, 500)
     environment = Environment(world, True, renderer)
@@ -74,6 +76,13 @@ def main_loop():
                 window.dispatch_event('on_draw')
                 window.flip()
         '''
+
+print(pyglet.gl.gluPerspective(65, 1, .1, 1000))
+
+heading = [1, 0, 0]
+r = Rot.from_euler("xyz", [0, 3.14, 0])
+print(r.apply(heading))
+
 
 
 main_loop()

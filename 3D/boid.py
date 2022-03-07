@@ -2,7 +2,7 @@ import random
 import math
 import numpy as np
 from utils import Utils
-
+from scipy.spatial.transform import Rotation as R
 
 class Boid:
 
@@ -11,15 +11,16 @@ class Boid:
         self.x = random.randrange(0, self.world_size)
         self.y = random.randrange(0, self.world_size)
         self.z = random.randrange(0, self.world_size)
-        self.y_rotation = random.uniform(-math.pi, math.pi)
-        self.z_rotation = random.uniform(-math.pi, math.pi)
-        self.test_heading = [random.uniform(-1, 1), random.uniform(-1, 1), random.uniform(-1, 1)]
-        self.test_heading = Utils.normalize(self.test_heading)
+        self.x_rot = random.uniform(-math.pi, math.pi)
+        self.y_rot = random.uniform(-math.pi, math.pi)
+        self.z_rot = random.uniform(-math.pi, math.pi)
+        self.heading = R.from_euler('xyz', [self.x_rot, self.y_rot, self.z_rot]).apply([0, 1, 0])
+        self.heading = Utils.normalize(self.heading)
 
     def move(self):
-        self.x += self.test_heading[0]
-        self.y += self.test_heading[1]
-        self.z += self.test_heading[2]
+        self.x += self.heading[0] * 1
+        self.y += self.heading[1] * 1
+        self.z += self.heading[2] * 1
         self.wrap()
 
     def wrap(self):
@@ -38,4 +39,7 @@ class Boid:
 
     def get_pos(self):
         return self.x, self.y
+
+    def get_rot(self):
+        return self.x_rot, self.y_rot, self.z_rot
 

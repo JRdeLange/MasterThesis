@@ -18,6 +18,14 @@ class Utils:
         return x, y, z
 
     @staticmethod
+    def world_to_render_spot(world, x, y, z):
+        dim_x, dim_y, dim_z = world.get_size()
+        x = (x-dim_x/2) / dim_x
+        y = (y-dim_y/2) / dim_y
+        z = (z-dim_z/2) / dim_z
+        return x, y, z - 1.7
+
+    @staticmethod
     def world_to_pixels(renderer, world, x, y):
         win_x, win_y = renderer.window.get_size()
         dim_x, dim_y = world.get_size()
@@ -43,6 +51,17 @@ class Utils:
         for element in vec:
             newvec.append(element / scalar)
         return newvec
+
+    @staticmethod
+    def perspective(aspect, fov, near, far):
+        return ((1/(aspect*math.tan(fov/2)),0,0,0),
+                (0,1/math.tan(fov/2),0,0),
+                (0,0,(near+far)/(near-far),(2*near*far)/(near-far)),
+                (0,0,-1,0))
+        '''return (((2*near)/(right-left), 0, (right+left)/(right-left), 0),
+                (0, (2*near)/(top-bottom), (top+bottom)/(top-bottom), 0),
+                (0, 0, (near+far)/(near-far), (2*far*near)/(near-far)),
+                (0, 0, -1, 0))'''
 
     @staticmethod
     def scale(x=1, y=1, z=1):
@@ -86,4 +105,4 @@ class Utils:
 
     @staticmethod
     def combine_matrices(trans, scale, rot):
-        return np.dot(trans, np.dot(scale, rot))
+        return np.dot(trans, np.dot(rot, scale))

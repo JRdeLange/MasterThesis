@@ -10,7 +10,7 @@ class Shaders:
 
     void main()
     {
-        gl_Position = model * vec4(pos, 0.0, 1.0);
+        gl_Position = model * vec4(pos, 1.0);
     }
     """
 

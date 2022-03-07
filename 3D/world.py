@@ -9,8 +9,9 @@ class World:
         self.size = size
         self.n_boids = 0
         self.boids = []
-        self.the_one = Agent(self.size)
-        self.boids.append(self.the_one)
+        self.the_one = None
+        #self.the_one = Agent(self.size)
+        #self.boids.append(self.the_one)
         pass
 
     def reset(self):
@@ -39,4 +40,4 @@ class World:
         return len(self.boids)
 
     def get_size(self):
-        return self.size, self.size
+        return self.size, self.size, self.size

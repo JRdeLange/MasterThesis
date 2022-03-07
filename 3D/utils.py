@@ -4,16 +4,18 @@
 
 import math
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 
 class Utils:
 
     @staticmethod
-    def world_to_screen(world, x, y):
-        dim_x, dim_y = world.get_size()
+    def world_to_unit(world, x, y, z):
+        dim_x, dim_y, dim_z = world.get_size()
         x = x / dim_x * 2 - 1
         y = y / dim_y * 2 - 1
-        return x, y
+        z = z / dim_z * 2 - 1
+        return x, y, z
 
     @staticmethod
     def world_to_pixels(renderer, world, x, y):
@@ -26,6 +28,21 @@ class Utils:
     @staticmethod
     def radians_to_vec(r):
         return math.sin(r), math.cos(r)
+
+    @staticmethod
+    def get_direction_vec(x, y, z):
+        pass
+
+    @staticmethod
+    def normalize(vec):
+        scalar = 0
+        for element in vec:
+            scalar += element*element
+        scalar = math.sqrt(scalar)
+        newvec = []
+        for element in vec:
+            newvec.append(element / scalar)
+        return newvec
 
     @staticmethod
     def scale(x=1, y=1, z=1):

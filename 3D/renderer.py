@@ -38,19 +38,17 @@ class Renderer:
             print(e.logs)
             exit()
 
+
     def render_boids(self):
+        self.shader_program.uniforms.color = (0.8, 0.8, 0.8, 1)
         for boid in self.world.get_boids():
-            trans_x, trans_y = Utils.world_to_screen(self.world, boid.x, boid.y)
-            trans = Utils.translate(trans_x, trans_y)
+
+            trans_x, trans_y, trans_z = Utils.world_to_unit(self.world, boid.x, boid.y, boid.z)
+            trans = Utils.translate(trans_x, trans_y, trans_z)
             scale = Utils.scale(0.05, 0.05)
-            rot = Utils.rotate(0, 0, -boid.rotation)
+            rot = Utils.identity()
             mat = Utils.combine_matrices(trans, scale, rot)
             self.shader_program.uniforms.model = mat
-            x, y = self.world.the_one.get_pos()
-            if abs(x - 50) < 25 and abs(y - 50) < 25:
-                self.shader_program.uniforms.color = (0.8, 0.8, 0, 1)
-            else:
-                self.shader_program.uniforms.color = (0.8, 0.8, 0.8, 1)
             self.render()
 
 

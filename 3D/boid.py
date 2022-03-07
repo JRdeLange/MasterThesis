@@ -10,14 +10,16 @@ class Boid:
         self.world_size = world_size
         self.x = random.randrange(0, self.world_size)
         self.y = random.randrange(0, self.world_size)
-        self.rotation = random.uniform(-math.pi, math.pi)
-
+        self.z = random.randrange(0, self.world_size)
+        self.y_rotation = random.uniform(-math.pi, math.pi)
+        self.z_rotation = random.uniform(-math.pi, math.pi)
+        self.test_heading = [random.uniform(-1, 1), random.uniform(-1, 1), random.uniform(-1, 1)]
+        self.test_heading = Utils.normalize(self.test_heading)
 
     def move(self):
-        x, y = Utils.radians_to_vec(self.rotation)
-        self.x += x
-        self.y += y
-        self.rotation += 0.05 + random.randrange(-1, 1) / 50.
+        self.x += self.test_heading[0]
+        self.y += self.test_heading[1]
+        self.z += self.test_heading[2]
         self.wrap()
 
     def wrap(self):
@@ -25,10 +27,14 @@ class Boid:
             self.x -= self.world_size
         if self.y > self.world_size:
             self.y -= self.world_size
+        if self.z > self.world_size:
+            self.z -= self.world_size
         if self.x < 0:
             self.x += self.world_size
         if self.y < 0:
             self.y += self.world_size
+        if self.z < 0:
+            self.z += self.world_size
 
     def get_pos(self):
         return self.x, self.y

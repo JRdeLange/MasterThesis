@@ -17,7 +17,7 @@ from rl.memory import SequentialMemory
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     world = World(100)
-    world.gen_boids(0)
+    world.gen_boids(20)
     graphics = True
     renderer = Renderer(world, 500, 500)
     environment = Environment(world, True, renderer)
@@ -53,16 +53,17 @@ def main_loop():
 
     dqn.test(environment, nb_episodes=5, visualize=True)'''
 
-    while False:
+    while True:
 
         #print(1.0/(time.time()-prev_time))
         prev_time = time.time()
 
         keys = pyglet.window.key.KeyStateHandler()
-        state, reward, done, info = environment.step(4)
-        print(reward)
+        #state, reward, done, info = environment.step(4)
+        #print(reward)
 
-        #world.tick()
+        world.tick()
+        environment.render()
 
         #pyglet.clock.tick()
         '''

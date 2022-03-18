@@ -19,10 +19,10 @@ from rl.memory import SequentialMemory
 if __name__ == '__main__':
     world = World(100)
     print(Utils.world_to_render_spot(world, -.5, -.5, -.5))
-    world.gen_boids(10)
-    graphics = True
+    world.gen_boids(1000)
+    graphics = False
     renderer = Renderer(world, 500, 500)
-    environment = Environment(world, True, renderer)
+    environment = Environment(world, graphics, renderer)
 
 
 def main_loop():
@@ -56,8 +56,9 @@ def main_loop():
     dqn.test(environment, nb_episodes=5, visualize=True)'''
 
     while True:
-
-        #print(1.0/(time.time()-prev_time))
+        diff = time.time()-prev_time
+        if (diff != 0):
+            print(1/(diff))
         prev_time = time.time()
 
         keys = pyglet.window.key.KeyStateHandler()

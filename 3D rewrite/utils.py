@@ -9,7 +9,7 @@ from scipy.spatial.transform import Rotation as R
 
 
 class Utils:
-    '''
+
     @staticmethod
     def world_to_unit(world, x, y, z):
         dim_x, dim_y, dim_z = world.get_size()
@@ -91,7 +91,7 @@ class Utils:
                  (0., 0., 1., 0.),
                  (0., 0., 0., 1.))
 
-        return np.dot(mat_z, np.dot(mat_y, mat_x))
+        return np.dot(mat_x, np.dot(mat_y, mat_z))
 
     @staticmethod
     def identity():
@@ -103,10 +103,12 @@ class Utils:
     @staticmethod
     def combine_matrices(trans, scale, rot):
         return np.dot(trans, np.dot(rot, scale))
-    '''
+
 
     @staticmethod
     def random_np_array(n, min, max):
         range = abs(max - min)
         l = np.random.rand(n) * range + min
         return l
+
+

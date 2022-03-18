@@ -12,6 +12,7 @@ class World:
         self.the_one = None
 
     def spawn_boids(self, n):
+        self.n_boids += n
         for x in range(n):
             self.boids.append(Boid())
 

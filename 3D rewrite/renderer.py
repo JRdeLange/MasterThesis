@@ -37,7 +37,7 @@ class Renderer:
         self.shader_program.uniforms.color = (0.8, 0.8, 0.8, 1)
 
     def render_boids(self):
-        scale = Utils.scale(.02, .02, .02)
+        scale = Utils.scale(.05, .05, .05)
         for boid in self.world.boids:
             translate = Utils.translate(boid.pos[0], boid.pos[1], boid.pos[2]-2)
             heading = boid.heading.as_euler("xyz")

@@ -7,7 +7,7 @@ import pyglet
 
 if __name__ == '__main__':
     world = World()
-    world.spawn_boids(100)
+    world.spawn_boids(50)
     renderer = Renderer(800, 800, world)
     graphics = True
 

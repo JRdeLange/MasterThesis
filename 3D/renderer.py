@@ -12,7 +12,7 @@ class Renderer:
     batch = pyglet.graphics.Batch()
 
     def __init__(self, world, w, h):
-        self.window = pyglet.window.Window()
+        self.window = pyglet.window.Window(850, 850)
         self.world = world
         self.box_model = pyglet.graphics.vertex_list(8, ('v3f', (-.5, -.5, -.5,   .5, -.5, -.5,
                                                                  -.5, .5, -.5,   .5, .5, -.5,

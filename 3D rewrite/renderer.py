@@ -4,6 +4,7 @@ import pyshaders as ps
 from shaders import Shaders
 from utils import Utils
 from models import Models
+from boid import Boid
 import math
 
 
@@ -25,6 +26,7 @@ class Renderer:
         def on_draw():
             glClearColor(0.1, 0.1, 0.1, 1.0)
             glClear(GL_COLOR_BUFFER_BIT)
+            self.render_predator()
             self.render_boids()
             self.render_box()
 
@@ -38,6 +40,7 @@ class Renderer:
 
     def render_boids(self):
         scale = Utils.scale(.05, .05, .05)
+        self.shader_program.uniforms.color = Boid.color
         for boid in self.world.boids:
             translate = Utils.translate(boid.pos[0], boid.pos[1], boid.pos[2]-2)
             heading = boid.heading.as_euler("xyz")
@@ -45,6 +48,17 @@ class Renderer:
             total = Utils.combine_matrices(translate, scale, rotate)
             self.shader_program.uniforms.model = total
             self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
+
+    def render_predator(self):
+        predator = self.world.predator
+        scale = Utils.scale(.05, .05, .05)
+        translate = Utils.translate(predator.pos[0], predator.pos[1], predator.pos[2] - 2)
+        heading = predator.forward
+        rotate = Utils.rotate(heading[0], heading[1], heading[2])
+        total = Utils.combine_matrices(translate, scale, rotate)
+        self.shader_program.uniforms.model = total
+        self.shader_program.uniforms.color = predator.color
+        self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
 
     def render_box(self):
         self.shader_program.uniforms.model = Utils.translate(0, 0, -2)

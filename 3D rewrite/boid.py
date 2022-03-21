@@ -6,6 +6,8 @@ import random
 
 
 class Boid:
+    color = (0.8, 0.8, 0.8, 1)
+    speed = 0.01
 
     def __init__(self):
         self.pos = u.random_np_array(3, -1, 1)
@@ -13,9 +15,10 @@ class Boid:
         self.forward = np.array(self.heading.apply(np.array((0, 1, 0))))
         self.rand2 = random.random() - .5
         self.rand3 = random.random() - .5
+        self.alive = True
 
     def move(self):
-        self.pos += self.forward * 0.02
+        self.pos += self.forward * Boid.speed
         change = R.from_rotvec((self.rand2*0.02, 0, self.rand3*0.02))
         self.heading *= change
         self.forward = np.array(self.heading.apply(np.array((0, 1, 0))))

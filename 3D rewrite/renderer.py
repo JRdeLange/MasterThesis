@@ -6,6 +6,8 @@ from utils import Utils
 from models import Models
 from boid import Boid
 import math
+from scipy.spatial.transform import Rotation as R
+
 
 
 # Nice rendering example

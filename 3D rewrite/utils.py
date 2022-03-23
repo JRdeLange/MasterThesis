@@ -54,6 +54,14 @@ class Utils:
         return newvec
 
     @staticmethod
+    def normalize_nparray(arr):
+        scalar = 0
+        for element in arr:
+            scalar += element * element
+        scalar = math.sqrt(scalar)
+        return arr / scalar
+
+    @staticmethod
     def perspective(aspect, fov, near, far):
         return ((1/(aspect*math.tan(fov/2)),0,0,0),
                 (0,1/math.tan(fov/2),0,0),

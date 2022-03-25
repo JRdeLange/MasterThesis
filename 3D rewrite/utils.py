@@ -11,6 +11,37 @@ from scipy.spatial.transform import Rotation as R
 class Utils:
 
     @staticmethod
+    def wrapping_distance_vector(origin, to):
+        vec = [0, 0, 0]
+        # Construct all options
+        x_options = [to[0] - 2, to[0], to[0] + 2]
+        y_options = [to[1] - 2, to[1], to[1] + 2]
+        z_options = [to[2] - 2, to[2], to[2] + 2]
+        # Construct vector
+        vec[0] = Utils.best_option(origin[0], x_options)
+        vec[1] = Utils.best_option(origin[1], y_options)
+        vec[2] = Utils.best_option(origin[2], z_options)
+        return vec
+
+    # Select lowest distance option
+    @staticmethod
+    def best_option(origin, options):
+        lowest = 10
+        raw_dist = None
+        # Find the closest option
+        for option, value in enumerate(options):
+            dist = value - origin
+            if abs(dist) < lowest:
+                lowest = abs(dist)
+                raw_dist = dist
+        # Return the distance
+        return raw_dist
+
+    @staticmethod
+    def vec3_magnitude(vec):
+        return np.sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2])
+
+    @staticmethod
     def world_to_unit(world, x, y, z):
         dim_x, dim_y, dim_z = world.get_size()
         x = x / dim_x * 2 - 1

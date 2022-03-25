@@ -14,11 +14,15 @@ class World:
         self.boids = []
         self.the_one = None
         self.predator = None
+        self.distance_matrix = {}
+        # ID 0 is reserved for the predator
+        self.next_boid_ID = 1
 
     def spawn_boids(self, n):
         self.n_boids += n
         for x in range(n):
-            self.boids.append(Boid())
+            self.boids.append(Boid(self.next_boid_ID))
+            self.next_boid_ID += 1
 
     def tick(self):
         # move all boids
@@ -30,3 +34,7 @@ class World:
 
     def add_predator(self):
         self.predator = Predator(self)
+
+    def fill_distance_matrix(self):
+        self.distance_matrix = {}
+        pass

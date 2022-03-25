@@ -3,19 +3,21 @@ import numpy as np
 import math
 from scipy.spatial.transform import Rotation as R
 import random
+import config
 
 
 class Boid:
-    color = (0.8, 0.8, 0.8, 1)
-    speed = 0.01
+    color = config.boid_color
+    speed = config.boid_speed
 
-    def __init__(self):
+    def __init__(self, ID):
         self.pos = u.random_np_array(3, -1, 1)
         self.heading = R.from_rotvec((random.uniform(0, 0), 0, random.uniform(0, 0)))
         self.forward = np.array(self.heading.apply(np.array((0, 1, 0))))
         self.rand2 = random.random() - .5
         self.rand3 = random.random() - .5
         self.alive = True
+        self.ID = ID
 
     def move(self):
         self.pos += self.forward * Boid.speed

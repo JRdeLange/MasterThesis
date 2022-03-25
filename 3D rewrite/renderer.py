@@ -55,8 +55,8 @@ class Renderer:
         predator = self.world.predator
         scale = Utils.scale(.05, .05, .05)
         translate = Utils.translate(predator.pos[0], predator.pos[1], predator.pos[2] - 2)
-        heading = predator.forward
-        rotate = Utils.rotate(heading[0], heading[1], heading[2])
+        rotation = predator.forward
+        rotate = Utils.rotate(rotation[0], rotation[1], rotation[2])
         total = Utils.combine_matrices(translate, scale, rotate)
         self.shader_program.uniforms.model = total
         self.shader_program.uniforms.color = predator.color

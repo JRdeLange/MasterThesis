@@ -6,6 +6,13 @@ import config
 import math
 
 
+class Target:
+    def __init__(self, boid, vector, dist):
+        self.boid = boid
+        self.vector = vector
+        self.dist = dist
+
+
 class Predator:
     speed = config.predator_speed
     color = config.predator_color
@@ -47,27 +54,20 @@ class Predator:
             # If boids are close enough for confusion, pick a random one that is close enough
             if config.predator_confusion:
                 if len(close_enough) > 0:
-                    print("yes")
                     target = random.choice(close_enough)
         else:
-            target = self.target[0]
+            target = self.target.boid
             self.chase_counter -= 1
 
         vec_to_boid = U.wrapping_distance_vector(self.pos, target.pos)
         dist = U.vec3_magnitude(vec_to_boid)
-        self.target = (target, vec_to_boid, dist)
-
-        # Eat boid if close enough
-        if self.target[2] < config.predator_eating_distance:
-            self.target[0].alive = False
-            self.world.boids.remove(self.target[0])
-            self.chase_counter = 0
+        vec_to_boid = U.normalize(vec_to_boid)
+        self.target = Target(target, vec_to_boid, dist)
 
         # Change direction
-        self.change_heading_to_boid(self.target[1])
+        self.change_heading_to_boid(self.target.vector)
 
     def change_heading_to_boid(self, boid_vector):
-        boid_vector = U.normalize(boid_vector)
         # Find angle, cap at maximal turning speed
         theta = -np.arccos(np.dot(boid_vector, self.forward))
         if abs(theta) > config.predator_turning_speed:
@@ -87,6 +87,13 @@ class Predator:
         self.find_target()
         self.pos += self.forward * Predator.speed
         self.wrap()
+        self.eat()
+
+    def eat(self):
+        if self.target.dist < config.predator_eating_distance:
+            self.target.boid.alive = False
+            self.world.boids.remove(self.target.boid)
+            self.chase_counter = 0
 
     def wrap(self):
         for i, val in enumerate(self.pos):

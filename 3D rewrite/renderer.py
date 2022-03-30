@@ -1,6 +1,8 @@
 import pyglet
 from pyglet.gl import *
 import pyshaders as ps
+
+import config
 from shaders import Shaders
 from utils import Utils
 from models import Models
@@ -59,14 +61,12 @@ class Renderer:
         rotate = Utils.rotate(rotation[0], rotation[1], rotation[2])
         total = Utils.combine_matrices(translate, scale, rotate)
         self.shader_program.uniforms.model = total
-        self.shader_program.uniforms.color = predator.color
+        self.shader_program.uniforms.color = config.predator_color
         self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
 
     def render_box(self):
         self.shader_program.uniforms.model = Utils.translate(0, 0, -2)
         self.wireframe_world_model.draw(pyglet.gl.GL_LINES)
-
-
 
     def render(self):
         for window in pyglet.app.windows:

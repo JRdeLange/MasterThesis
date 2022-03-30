@@ -4,18 +4,10 @@ from utils import Utils as U
 import numpy as np
 import config
 import math
-
-
-class Target:
-    def __init__(self, boid, vector, dist):
-        self.boid = boid
-        self.vector = vector
-        self.dist = dist
+from agentinfo import AgentInfo
 
 
 class Predator:
-    speed = config.predator_speed
-    color = config.predator_color
 
     def __init__(self, world):
 
@@ -39,30 +31,25 @@ class Predator:
             # Boids close enough for confusion
             close_enough = []
             for boid in self.world.boids:
-
-                vec_to_boid = U.wrapping_distance_vector(self.pos, boid.pos)
-                dist = U.vec3_magnitude(vec_to_boid)
+                current = self.world.distance_matrix[(self.ID, boid.ID)]
 
                 # If it is the new closest boid save it
-                if dist < closest_distance:
-                    closest_distance = dist
-                    target = boid
+                if current.dist < closest_distance:
+                    closest_distance = current.dist
+                    target = current
                 # If it is close enough for confusion, save it
-                if dist < config.predator_confusion_distance:
-                    close_enough.append(boid)
+                if current.dist < config.predator_confusion_distance:
+                    close_enough.append(current)
 
             # If boids are close enough for confusion, pick a random one that is close enough
             if config.predator_confusion:
                 if len(close_enough) > 0:
                     target = random.choice(close_enough)
         else:
-            target = self.target.boid
+            target = self.world.distance_matrix[(self.ID, self.target.agent.ID)]
             self.chase_counter -= 1
 
-        vec_to_boid = U.wrapping_distance_vector(self.pos, target.pos)
-        dist = U.vec3_magnitude(vec_to_boid)
-        vec_to_boid = U.normalize(vec_to_boid)
-        self.target = Target(target, vec_to_boid, dist)
+        self.target = target
 
         # Change direction
         self.change_heading_to_boid(self.target.vector)
@@ -85,14 +72,17 @@ class Predator:
 
     def move(self):
         self.find_target()
-        self.pos += self.forward * Predator.speed
+        if self.target.dist > config.predator_lunge_distance:
+            self.pos += self.forward * config.predator_speed
+        else:
+            self.pos += self.forward * config.predator_lunge_speed
         self.wrap()
         self.eat()
 
     def eat(self):
         if self.target.dist < config.predator_eating_distance:
-            self.target.boid.alive = False
-            self.world.boids.remove(self.target.boid)
+            self.target.agent.alive = False
+            self.world.remove_boid(self.target.agent)
             self.chase_counter = 0
 
     def wrap(self):

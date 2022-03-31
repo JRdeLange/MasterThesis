@@ -18,7 +18,8 @@ class World:
         self.predator = None
         self.distance_matrix = {}
         # ID 0 is reserved for the predator
-        self.next_boid_ID = 1
+        # ID 1 is reserved for The One
+        self.next_boid_ID = 2
 
     def spawn_boids(self, n):
         self.n_boids += n

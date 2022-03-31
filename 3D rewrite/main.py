@@ -7,7 +7,7 @@ import config
 
 if __name__ == '__main__':
     world = World()
-    world.spawn_boids(10)
+    world.spawn_boids(3)
     world.add_predator()
     renderer = Renderer(800, 800, world)
 
@@ -22,3 +22,6 @@ def main_loop():
 
 
 main_loop()
+
+# if = input("Kies steen papier of schaar")
+# print(random.choice(["Je wint!", "Je verliest 😥", "Gelijkspel!"]))

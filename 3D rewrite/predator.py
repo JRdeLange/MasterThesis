@@ -72,10 +72,10 @@ class Predator:
 
     def move(self):
         self.find_target()
-        if self.target.dist > config.predator_lunge_distance:
-            self.pos += self.forward * config.predator_speed
-        else:
+        if config.predator_lunging and self.target.dist < config.predator_lunge_distance:
             self.pos += self.forward * config.predator_lunge_speed
+        else:
+            self.pos += self.forward * config.predator_speed
         self.wrap()
         self.eat()
 

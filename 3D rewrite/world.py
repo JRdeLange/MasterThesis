@@ -2,6 +2,7 @@ from boid import Boid
 from predator import Predator
 from utils import Utils as U
 from agentinfo import AgentInfo
+from theone import TheOne
 
 '''
 World goes from -1,-1,-1 to 1,1,1
@@ -24,7 +25,9 @@ class World:
     def spawn_boids(self, n):
         self.n_boids += n
         for x in range(n):
-            self.boids.append(Boid(self.next_boid_ID))
+            boid = Boid()
+            boid.set_ID(self.next_boid_ID)
+            self.boids.append(boid)
             self.next_boid_ID += 1
         self.agents += self.boids
 
@@ -41,6 +44,10 @@ class World:
     def add_predator(self):
         self.predator = Predator(self)
         self.agents.append(self.predator)
+
+    def add_the_one(self):
+        self.the_one = TheOne()
+        self.agents.append(self.the_one)
 
     def remove_boid(self, boid):
         self.agents.remove(boid)

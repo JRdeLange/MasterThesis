@@ -2,7 +2,8 @@ import math
 
 graphics = True
 
-# World
+# Environment
+nr_observed_boids = 4
 
 # Boid
 boid_speed = 0.01

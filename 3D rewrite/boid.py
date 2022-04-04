@@ -10,14 +10,17 @@ class Boid:
     color = config.boid_color
     speed = config.boid_speed
 
-    def __init__(self, ID):
+    def __init__(self):
         self.pos = u.random_np_array(3, -1, 1)
         self.heading = R.from_rotvec((random.uniform(0, 0), 0, random.uniform(0, 0)))
         self.forward = np.array(self.heading.apply(np.array((0, 1, 0))))
         self.rand2 = random.random() - .5
         self.rand3 = random.random() - .5
         self.alive = True
-        self.ID = ID
+        self.ID = None
+
+    def set_id(self, id):
+        self.ID = id
 
     def move(self):
         self.pos += self.forward * Boid.speed

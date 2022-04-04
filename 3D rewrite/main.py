@@ -3,6 +3,7 @@ from world import World
 from renderer import Renderer
 import pyglet
 import config
+from environment import Environment
 
 
 if __name__ == '__main__':
@@ -10,6 +11,7 @@ if __name__ == '__main__':
     world.spawn_boids(3)
     world.add_predator()
     renderer = Renderer(800, 800, world)
+    environment = Environment(world)
 
 
 def main_loop():

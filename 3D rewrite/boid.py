@@ -17,10 +17,10 @@ class Boid:
         self.rand2 = random.random() - .5
         self.rand3 = random.random() - .5
         self.alive = True
-        self.ID = None
+        self.id = None
 
     def set_id(self, id):
-        self.ID = id
+        self.id = id
 
     def move(self):
         self.pos += self.forward * Boid.speed

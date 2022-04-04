@@ -4,6 +4,7 @@ from renderer import Renderer
 import pyglet
 import config
 from environment import Environment
+import numpy as np
 
 
 if __name__ == '__main__':

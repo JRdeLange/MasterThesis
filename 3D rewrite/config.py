@@ -3,7 +3,8 @@ import math
 graphics = True
 
 # Environment
-nr_observed_boids = 4
+# The number of observed agents includes the predator
+nr_observed_agents = 4
 
 # Boid
 boid_speed = 0.01

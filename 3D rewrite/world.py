@@ -26,7 +26,7 @@ class World:
         self.n_boids += n
         for x in range(n):
             boid = Boid()
-            boid.set_ID(self.next_boid_ID)
+            boid.set_id(self.next_boid_ID)
             self.boids.append(boid)
             self.next_boid_ID += 1
         self.agents += self.boids
@@ -55,7 +55,6 @@ class World:
 
     def fill_distance_matrix(self):
         self.distance_matrix = {}
-        print(self.agents)
         n_agents = len(self.agents)
         for x in range(n_agents):
             for y in range(x, n_agents):
@@ -64,5 +63,5 @@ class World:
                 dist = U.vec3_magnitude(vec)
                 item = AgentInfo(self.agents[y], vec, dist)
                 min_item = AgentInfo(self.agents[x], min_vec, dist)
-                self.distance_matrix[(self.agents[x].ID, self.agents[y].ID)] = item
-                self.distance_matrix[(self.agents[y].ID, self.agents[x].ID)] = min_item
+                self.distance_matrix[(self.agents[x].id, self.agents[y].id)] = item
+                self.distance_matrix[(self.agents[y].id, self.agents[x].id)] = min_item

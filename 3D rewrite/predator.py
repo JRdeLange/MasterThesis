@@ -19,7 +19,7 @@ class Predator:
         self.rotation = self.up
         self.chase_counter = 0
         self.target = None
-        self.ID = 0
+        self.id = 0
 
     # Find closest boid and change direction to it
     def find_target(self):
@@ -31,7 +31,7 @@ class Predator:
             # Boids close enough for confusion
             close_enough = []
             for boid in self.world.boids:
-                current = self.world.distance_matrix[(self.ID, boid.ID)]
+                current = self.world.distance_matrix[(self.id, boid.id)]
 
                 # If it is the new closest boid save it
                 if current.dist < closest_distance:
@@ -46,7 +46,7 @@ class Predator:
                 if len(close_enough) > 0:
                     target = random.choice(close_enough)
         else:
-            target = self.world.distance_matrix[(self.ID, self.target.agent.ID)]
+            target = self.world.distance_matrix[(self.id, self.target.agent.id)]
             self.chase_counter -= 1
 
         self.target = target

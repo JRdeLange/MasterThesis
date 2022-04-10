@@ -9,7 +9,7 @@ import numpy as np
 
 if __name__ == '__main__':
     world = World()
-    world.spawn_boids(3)
+    world.spawn_boids(config.nr_of_boids)
     world.add_predator()
     renderer = Renderer(800, 800, world)
     environment = Environment(world)

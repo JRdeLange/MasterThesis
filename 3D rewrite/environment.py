@@ -18,12 +18,14 @@ class Environment(gym.Env):
         #  [boid],
         #  [boid]....
         #
+        # speed as well?
         # [distance,   vector,   forward]
         # [f,          f, f, f,  f, f, f]
         self.observation_space = spaces.Box(low=-1, high=1,
                                             shape=(config.nr_observed_agents, 7))
 
     def step(self, action):
+        # for action maybe parameterize the action space
         x, y, z, t = action
         the_one = self.world.the_one
         quaternion = U.construct_quaternion(x, y, z, t)

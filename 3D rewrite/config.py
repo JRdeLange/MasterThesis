@@ -5,6 +5,7 @@ graphics = True
 # Environment
 # The number of observed agents includes the predator
 nr_observed_agents = 4
+nr_of_boids = 8
 
 # Boid
 boid_speed = 0.01

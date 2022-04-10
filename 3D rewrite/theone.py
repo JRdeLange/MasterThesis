@@ -12,7 +12,7 @@ class TheOne(Boid):
         self.heading = heading
 
     def move(self):
-        self.pos += self.heading * config.boid_speed
+        self.pos += self.forward * config.boid_speed
 
 
 

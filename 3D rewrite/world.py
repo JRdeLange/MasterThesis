@@ -14,6 +14,7 @@ class World:
     def __init__(self):
         self.n_boids = 0
         self.boids = []
+        self.passives = []
         self.agents = []
         self.the_one = None
         self.predator = None
@@ -30,6 +31,7 @@ class World:
             self.boids.append(boid)
             self.next_boid_ID += 1
         self.agents += self.boids
+        self.passives += self.boids
 
     def tick(self):
         self.fill_distance_matrix()
@@ -52,6 +54,8 @@ class World:
     def remove_boid(self, boid):
         self.agents.remove(boid)
         self.boids.remove(boid)
+        if boid in self.passives:
+            self.passives.remove(boid)
 
     def fill_distance_matrix(self):
         self.distance_matrix = {}

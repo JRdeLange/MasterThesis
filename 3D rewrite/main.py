@@ -19,6 +19,7 @@ def main_loop():
     graphics = config.graphics
     while True:
         world.tick()
+        environment.construct_observation(world.boids[2])
 
         if graphics:
             renderer.render()

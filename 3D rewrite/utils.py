@@ -11,6 +11,17 @@ from scipy.spatial.transform import Rotation as R
 class Utils:
 
     @staticmethod
+    def capped_quaternion(forward, goal, max_theta):
+        theta = -np.arccos(np.dot(goal, forward))
+        if abs(theta) > max_theta:
+            theta = math.copysign(max_theta, theta)
+        # Find axis
+        axis = Utils.normalize_nparray(np.cross(goal, forward))
+        # Construct quaternion
+        quaternion = Utils.construct_quaternion(axis[0], axis[1], axis[2], theta)
+        return quaternion
+
+    @staticmethod
     def construct_quaternion(x, y, z, t):
         return [np.sin(t / 2) * x, np.sin(t / 2) * y, np.sin(t / 2) * z, np.cos(t / 2)]
 

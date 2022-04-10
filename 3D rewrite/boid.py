@@ -4,6 +4,7 @@ import math
 from scipy.spatial.transform import Rotation as R
 import random
 import config
+from utils import Utils as U
 
 
 class Boid:
@@ -35,3 +36,8 @@ class Boid:
                 self.pos[i] = val - 2
             elif val < - 1:
                 self.pos[i] = val + 2
+
+    def turn_by_quaternion(self, quaternion):
+        change = R.from_quat(quaternion)
+        self.forward = U.normalize_nparray(change.apply(self.forward))
+

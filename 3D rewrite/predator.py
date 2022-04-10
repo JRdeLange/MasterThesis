@@ -32,7 +32,6 @@ class Predator:
             close_enough = []
             for boid in self.world.boids:
                 current = self.world.distance_matrix[(self.id, boid.id)]
-
                 # If it is the new closest boid save it
                 if current.dist < closest_distance:
                     closest_distance = current.dist
@@ -55,15 +54,7 @@ class Predator:
         self.change_heading_to_boid(self.target.vector)
 
     def change_heading_to_boid(self, boid_vector):
-        # Find angle, cap at maximal turning speed
-        theta = -np.arccos(np.dot(boid_vector, self.forward))
-        if abs(theta) > config.predator_turning_speed:
-            theta = math.copysign(config.predator_turning_speed, theta)
-        # Find axis
-        axis = U.normalize_nparray(np.cross(boid_vector, self.forward))
-        # Construct quaternion
-        quaternion = [np.sin(theta/2) * axis[0], np.sin(theta/2) * axis[1],
-                      np.sin(theta/2) * axis[2], np.cos(theta/2)]
+        quaternion = U.capped_quaternion(self.forward, boid_vector, config.predator_turning_speed)
 
         # Apply quaternion
         change = R.from_quat(quaternion)

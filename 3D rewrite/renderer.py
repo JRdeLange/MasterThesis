@@ -31,7 +31,7 @@ class Renderer:
             glClearColor(0.1, 0.1, 0.1, 1.0)
             glClear(GL_COLOR_BUFFER_BIT)
             self.render_predator()
-            self.render_boids()
+            self.render_passives()
             self.render_box()
 
     def init_shaders(self):
@@ -42,11 +42,11 @@ class Renderer:
         self.shader_program.uniforms.project = Utils.perspective(1, .6*math.pi, 0.1, 100)
         self.shader_program.uniforms.color = (0.8, 0.8, 0.8, 1)
 
-    def render_boids(self):
+    def render_passives(self):
         scale = Utils.scale(.05, .05, .05)
         self.shader_program.uniforms.color = Boid.color
-        for boid in self.world.boids:
-            translate = Utils.translate(boid.pos[0], boid.pos[1], boid.pos[2]-2)
+        for boid in self.world.passives:
+            translate = Utils.translate(boid.pos[0], boid.pos[1], boid.pos[2] - 2)
             heading = boid.heading.as_euler("xyz")
             rotate = Utils.rotate(heading[0], heading[1], heading[2])
             total = Utils.combine_matrices(translate, scale, rotate)
@@ -57,7 +57,8 @@ class Renderer:
         predator = self.world.predator
         scale = Utils.scale(.05, .05, .05)
         translate = Utils.translate(predator.pos[0], predator.pos[1], predator.pos[2] - 2)
-        rotation = predator.forward
+        rotation = predator.rotation
+        #not currently calcing rotation matrix starting from (0, 1, 0)
         rotate = Utils.rotate(rotation[0], rotation[1], rotation[2])
         total = Utils.combine_matrices(translate, scale, rotate)
         self.shader_program.uniforms.model = total

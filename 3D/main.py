@@ -28,7 +28,7 @@ if __name__ == '__main__':
 def main_loop():
     prev_time = time.time() - 1
 
-    '''n_actions = environment.action_space.n
+    n_actions = environment.action_space.n
 
     model = Sequential()
     model.add(Flatten(input_shape=(1,) + environment.observation_space.shape))
@@ -53,7 +53,7 @@ def main_loop():
 
     environment.set_graphics(True)
 
-    dqn.test(environment, nb_episodes=5, visualize=True)'''
+    dqn.test(environment, nb_episodes=5, visualize=True)
 
     while True:
         diff = time.time()-prev_time

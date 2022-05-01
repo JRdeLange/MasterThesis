@@ -2,15 +2,16 @@ import math
 
 graphics = True
 
-# Environment
+# World
 # The number of observed agents includes the predator
-nr_observed_agents = 4
-nr_of_boids = 8
+nr_observed_agents = 0
+nr_of_boids = 0
+predator_present = False
 
 # Boid
 boid_speed = 0.01
 boid_color = (0.8, 0.8, 0.8, 1)
-boid_turning_speed = 0.04 * math.pi
+boid_turning_speed = 0.01 * math.pi
 
 # Predator
 predator_speed = 0.012

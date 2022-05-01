@@ -30,7 +30,8 @@ class Renderer:
         def on_draw():
             glClearColor(0.1, 0.1, 0.1, 1.0)
             glClear(GL_COLOR_BUFFER_BIT)
-            self.render_predator()
+            if config.predator_present:
+                self.render_predator()
             self.render_passives()
             self.render_box()
 
@@ -45,7 +46,7 @@ class Renderer:
     def render_passives(self):
         scale = Utils.scale(.05, .05, .05)
         self.shader_program.uniforms.color = Boid.color
-        for boid in self.world.passives:
+        for boid in self.world.boids:
             translate = Utils.translate(boid.pos[0], boid.pos[1], boid.pos[2] - 2)
             heading = boid.heading.as_euler("xyz")
             rotate = Utils.rotate(heading[0], heading[1], heading[2])

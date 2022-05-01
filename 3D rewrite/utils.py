@@ -12,11 +12,24 @@ class Utils:
 
     @staticmethod
     def capped_quaternion(forward, goal, max_theta):
-        theta = -np.arccos(np.dot(goal, forward))
+        # check for slight inaccuracies (?) that cause an invalid arccos
+        check = np.dot(goal, forward)
+        if check > 1:
+            check = 1
+        if check < -1:
+            check = -1
+        theta = -np.arccos(check)
         if abs(theta) > max_theta:
             theta = math.copysign(max_theta, theta)
         # Find axis
-        axis = Utils.normalize_nparray(np.cross(goal, forward))
+        # Check if forward and goal aren't (anti)parallel
+        axis = np.cross(goal, forward)
+        if axis[0] == axis[1] == axis[2] == 0:
+            # If they are (anti)parallel, move the goal a tiny tiny bit
+            goal = Utils.normalize([goal[0] + 0.01, goal[1] + 0.01, goal[2] + 0.01])
+            axis = np.cross(goal, forward)
+
+        axis = Utils.normalize_nparray(axis)
         # Construct quaternion
         quaternion = Utils.construct_quaternion(axis[0], axis[1], axis[2], theta)
         return quaternion

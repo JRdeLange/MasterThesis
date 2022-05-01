@@ -3,6 +3,7 @@ from predator import Predator
 from utils import Utils as U
 from agentinfo import AgentInfo
 from theone import TheOne
+import config
 
 '''
 World goes from -1,-1,-1 to 1,1,1
@@ -34,8 +35,6 @@ class World:
         self.passives += self.boids
 
     def tick(self):
-        self.fill_distance_matrix()
-
         if self.predator:
             self.predator.move()
 
@@ -43,13 +42,17 @@ class World:
         for boid in self.boids:
             boid.move()
 
+        self.fill_distance_matrix()
+
     def add_predator(self):
         self.predator = Predator(self)
         self.agents.append(self.predator)
 
     def add_the_one(self):
+        self.n_boids += 1
         self.the_one = TheOne()
         self.agents.append(self.the_one)
+        self.boids.append(self.the_one)
 
     def remove_boid(self, boid):
         self.agents.remove(boid)
@@ -69,3 +72,31 @@ class World:
                 min_item = AgentInfo(self.agents[x], min_vec, dist)
                 self.distance_matrix[(self.agents[x].id, self.agents[y].id)] = item
                 self.distance_matrix[(self.agents[y].id, self.agents[x].id)] = min_item
+
+    def reset(self):
+        self.reset_vars()
+        self.spawn_things()
+
+    def spawn_things(self):
+        self.add_the_one()
+        if config.predator_present:
+            self.add_predator()
+        self.spawn_boids(config.nr_of_boids)
+        self.fill_distance_matrix()
+
+    def reset_vars(self):
+        self.n_boids = 0
+        self.boids = []
+        self.passives = []
+        self.agents = []
+        self.the_one = None
+        self.predator = None
+        self.distance_matrix = {}
+        # ID 0 is reserved for the predator
+        # ID 1 is reserved for The One
+        self.next_boid_ID = 2
+
+
+
+
+

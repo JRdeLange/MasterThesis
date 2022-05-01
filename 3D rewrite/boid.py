@@ -1,4 +1,3 @@
-from utils import Utils as u
 import numpy as np
 import math
 from scipy.spatial.transform import Rotation as R
@@ -12,9 +11,11 @@ class Boid:
     speed = config.boid_speed
 
     def __init__(self):
-        self.pos = u.random_np_array(3, -1, 1)
-        self.heading = R.from_rotvec((random.uniform(0, 0), 0, random.uniform(0, 0)))
-        self.forward = np.array(self.heading.apply(np.array((0, 1, 0))))
+        self.pos = U.random_np_array(3, -1, 1)
+        x, y, z = U.normalize_nparray(U.random_np_array(3, -1, 1))
+        random_quat = U.construct_quaternion(z, y, z, random.uniform(-math.pi, math.pi))
+        self.heading = R.from_quat(random_quat)
+        self.forward = np.array(self.heading.apply(U.normalize_nparray(U.random_np_array(3, -1, 1))))
         self.rand2 = random.random() - .5
         self.rand3 = random.random() - .5
         self.alive = True

@@ -25,10 +25,7 @@ class Boid:
         self.id = id
 
     def move(self):
-        self.pos += self.forward * Boid.speed
-        change = R.from_rotvec((self.rand2*0.02, 0, self.rand3*0.02))
-        self.heading *= change
-        self.forward = np.array(self.heading.apply(np.array((0, 1, 0))))
+        self.pos += self.forward * config.boid_speed
         self.wrap()
 
     def wrap(self):

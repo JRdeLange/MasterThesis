@@ -15,20 +15,67 @@ from rlcustom.agents.ddpg import DDPGAgent
 from rlcustom.memory import SequentialMemory
 from rlcustom.random import OrnsteinUhlenbeckProcess
 
+from rlcustom.agents.dqn import DQNAgent
+from rlcustom.policy import BoltzmannQPolicy
+
+
+def main_loop():
+    graphics = config.graphics
+    while True:
+        # world.tick()
+
+        if graphics:
+            renderer.render()
+
 
 if __name__ == '__main__':
     world = World()
     # world.spawn_boids(config.nr_of_boids)
     # world.add_predator()
     world.spawn_things()
-    renderer = Renderer(600, 600, world)
+    renderer = Renderer(800, 800, world)
     environment = Environment(world, renderer)
 
+    n_actions = environment.action_space.n
 
-    nb_actions = environment.action_space.shape[0]
+    model = Sequential()
+    model.add(Flatten(input_shape=(1,) + environment.observation_space.shape))
+    model.add(Dense(32))
+    model.add(Activation('relu'))
+    model.add(Dense(32))
+    model.add(Activation('relu'))
+    model.add(Dense(32))
+    model.add(Activation('relu'))
+    model.add(Dense(32))
+    model.add(Activation('relu'))
+    model.add(Dense(32))
+    model.add(Activation('relu'))
+    model.add(Dense(n_actions))
+    model.add(Activation('linear'))
+    print(model.summary())
+
+    memory = SequentialMemory(limit=50000, window_length=1)
+    policy = BoltzmannQPolicy()
+    dqn = DQNAgent(model=model, nb_actions=n_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2,
+                   policy=policy, environment=environment)
+    dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+
+    #dqn.load_weights('halfspeed14act19pass30000010000.h5f')
+
+    dqn.fit(environment, nb_steps=200000, visualize=True, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
+
+    #dqn.save_weights('halfspeed14act9pass20000010000.h5f', overwrite=True)
+
+    input("waiter")
+    environment.print_info = True
+
+    dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=1000, forward_other_agents=True)
+
+
+    '''nb_actions = environment.action_space.shape[0]
 
     print(environment.action_space.sample())
-
+    
     actor = Sequential()
     actor.add(Flatten(input_shape=(1,) + environment.observation_space.shape))
     actor.add(Dense(16))
@@ -42,7 +89,7 @@ if __name__ == '__main__':
     actor.add(Dense(16))
     actor.add(Activation('relu'))
     actor.add(Dense(nb_actions))
-    actor.add(Activation('linear'))
+    actor.add(Activation('tanh'))
     print(actor.summary())
 
     action_input = Input(shape=(nb_actions,), name='action_input')
@@ -67,32 +114,29 @@ if __name__ == '__main__':
     # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
     # even the metrics!
     memory = SequentialMemory(limit=100000, window_length=1)
-    #random_process = OrnsteinUhlenbeckProcess(size=nb_actions, theta=.15, mu=0., sigma=.3)
-    random_process = None
+    random_process = OrnsteinUhlenbeckProcess(size=nb_actions, theta=.15, mu=0., sigma=.3)
+    #random_process = None
     agent = DDPGAgent(nb_actions=nb_actions, actor=actor, critic=critic, critic_action_input=action_input,
                       memory=memory, nb_steps_warmup_critic=100, nb_steps_warmup_actor=100,
                       random_process=random_process, gamma=.99, target_model_update=1e-3)
     agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
 
-    agent.fit(environment, nb_steps=10000, visualize=False, verbose=2, nb_max_episode_steps=150)
+    #agent.load_weights('ddpg_weights.h5f')
+
+    agent.fit(environment, nb_steps=30000, visualize=True, verbose=2, nb_max_episode_steps=1000)
 
     agent.save_weights('ddpg_weights.h5f', overwrite=True)
 
     input("waiter")
 
-    agent.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=500)
+    agent.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=1000)'''
 
 
-def main_loop():
-    graphics = config.graphics
-    while True:
-        # world.tick()
-
-        if graphics:
-            renderer.render()
 
 
-#main_loop()
+
+# main_loop()
+
 
 
 

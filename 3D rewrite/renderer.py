@@ -46,21 +46,31 @@ class Renderer:
     def render_passives(self):
         scale = Utils.scale(.05, .05, .05)
         self.shader_program.uniforms.color = Boid.color
+        reset_color = False
         for boid in self.world.boids:
             translate = Utils.translate(boid.pos[0], boid.pos[1], boid.pos[2] - 2)
-            heading = boid.heading.as_euler("xyz")
-            rotate = Utils.rotate(heading[0], heading[1], heading[2])
+            quat = Utils.capped_quaternion([0, 1, 0], boid.forward, 1000)
+            rots = R.from_quat(quat).as_euler('xyz')
+            rotate = Utils.rotate(rots[0], rots[1], rots[2])
             total = Utils.combine_matrices(translate, scale, rotate)
+            if boid.id == self.world.the_one.id:
+                self.shader_program.uniforms.color = [.1, .6, .1]
+                reset_color = True
+            if boid.id == self.world.predator.target.agent.id:
+                self.shader_program.uniforms.color = [.8, .4, .1]
+                reset_color = True
             self.shader_program.uniforms.model = total
             self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
+            if reset_color:
+                self.shader_program.uniforms.color = Boid.color
 
     def render_predator(self):
         predator = self.world.predator
         scale = Utils.scale(.05, .05, .05)
         translate = Utils.translate(predator.pos[0], predator.pos[1], predator.pos[2] - 2)
-        rotation = predator.rotation
-        #not currently calcing rotation matrix starting from (0, 1, 0)
-        rotate = Utils.rotate(rotation[0], rotation[1], rotation[2])
+        quat = Utils.capped_quaternion([0, 1, 0], predator.forward, 1000)
+        rots = R.from_quat(quat).as_euler('xyz')
+        rotate = Utils.rotate(rots[0], rots[1], rots[2])
         total = Utils.combine_matrices(translate, scale, rotate)
         self.shader_program.uniforms.model = total
         self.shader_program.uniforms.color = config.predator_color

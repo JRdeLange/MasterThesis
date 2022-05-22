@@ -32,6 +32,13 @@ class Utils:
         axis = Utils.normalize_nparray(axis)
         # Construct quaternion
         quaternion = Utils.construct_quaternion(axis[0], axis[1], axis[2], theta)
+        '''if not np.isfinite(quaternion):
+            print(1, quaternion, axis, theta, forward, goal)'''
+        try:
+            np.asarray_chkfinite(quaternion)
+        except ValueError:
+            print(ValueError, quaternion, axis, theta, forward, goal)
+
         return quaternion
 
     @staticmethod

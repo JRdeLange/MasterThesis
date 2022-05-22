@@ -16,10 +16,47 @@ class Environment(gym.Env):
         self.renderer = renderer
         self.current_boid_index = None
         self.world = world
+        self.print_info = False
         # [axis x, axis y, axis z, angle]
         # new forward direction [x, y, z]
-        self.action_space = spaces.Box(np.array([np.float32(-1), np.float32(-1), np.float32(-1)]),
-                                       np.array([np.float32(1), np.float32(1), np.float32(1)]))
+        #self.action_space = spaces.Box(np.array([np.float32(-1), np.float32(-1), np.float32(-1)]),
+        #                               np.array([np.float32(1), np.float32(1), np.float32(1)]))
+        self.action_space = spaces.Discrete(14)
+        '''self.action_dict = {
+            0: np.array([1, 0, 0]),
+            1: np.array([0, 1, 0]),
+            2: np.array([0, 0, 1]),
+            3: np.array([-1, 0, 0]),
+            4: np.array([0, -1, 0]),
+            5: np.array([0, 0, -1])
+        }
+        self.action_dict = {
+            0: np.array([1, -1, -1]),
+            1: np.array([1, -1, 1]),
+            2: np.array([-1, -1, 1]),
+            3: np.array([-1, -1, -1]),
+            4: np.array([1, 1, -1]),
+            5: np.array([1, 1, 1]),
+            6: np.array([-1, 1, 1]),
+            7: np.array([-1, 1, -1])
+        }'''
+        self.action_dict = {
+            0: np.array([1, 0, 0]),
+            1: np.array([0, 1, 0]),
+            2: np.array([0, 0, 1]),
+            3: np.array([-1, 0, 0]),
+            4: np.array([0, -1, 0]),
+            5: np.array([0, 0, -1]),
+            6: np.array([1, -1, -1]),
+            7: np.array([1, -1, 1]),
+            8: np.array([-1, -1, 1]),
+            9: np.array([-1, -1, -1]),
+            10: np.array([1, 1, -1]),
+            11: np.array([1, 1, 1]),
+            12: np.array([-1, 1, 1]),
+            13: np.array([-1, 1, -1])
+        }
+
         # [[self]
         #  [predator],
         #  [boid],
@@ -28,29 +65,39 @@ class Environment(gym.Env):
         # speed as well? No, put speed in forward vector
         # [distance,   vector,   forward]
         # [f,          f, f, f,  f, f, f]
+        self.nr_of_obs_rows = config.nr_observed_agents + 1
+        if config.predator_present:
+            self.nr_of_obs_rows += 1
         self.observation_space = spaces.Box(low=-1, high=1,
-                                            shape=(config.nr_observed_agents+1, 7))
+                                            shape=(self.nr_of_obs_rows, 7))
+
+    def perform_agent_action(self, agent, action):
+        goal = U.normalize_nparray(self.action_dict[action])
+        quaternion = U.capped_quaternion(agent.forward, goal, config.boid_turning_speed)
+        agent.turn_by_quaternion(quaternion)
 
     def step(self, action):
         the_one: TheOne = self.world.the_one
         # for action maybe parameterize the action space
         # How to deal with action: https://stackoverflow.com/questions/22099490/calculate-vector-after-rotating-it-towards-another-by-angle-%CE%B8-in-3d-space
-        goal = U.normalize_nparray(action)
-        quaternion = U.capped_quaternion(the_one.forward, action, config.boid_turning_speed)
-        the_one.turn_by_quaternion(quaternion)
-        state = self.construct_observation(the_one)
+        #goal = U.normalize_nparray(action)
+        self.perform_agent_action(the_one, action)
         self.world.tick()
-        reward = self.get_reward_test()
-        done = False
+        state = self.construct_observation(the_one)
+        reward = self.get_reward()
+        done = not self.world.the_one.alive
         info = {}
+        if self.print_info:
+            print(action, the_one.forward, reward)
         return state, reward, done, info
 
     def get_reward_test(self):
         return self.world.the_one.forward[1]
-        #pos = self.world.the_one.pos
-        #if pos[1] < 0:
-        #    return 1
-        #return -1
+        pos = self.world.the_one.pos
+        #print(pos)
+        if pos[1] < 0:
+            return 1
+        return -1
 
     def get_reward(self):
         if self.world.the_one.alive:
@@ -59,14 +106,15 @@ class Environment(gym.Env):
 
     def construct_observation(self, agent):
         # Make observation array
-        observation = np.zeros((config.nr_observed_agents+1, 7))
+        observation = np.zeros((self.nr_of_obs_rows, 7))
         # Fill in first row about self
         self.fill_in_first_observation_row(observation, agent)
-        if config.nr_observed_agents == 0:
+        if self.nr_of_obs_rows == 1:
             return observation
         # Fill in second row about predator
-        predator_info: AgentInfo = self.world.distance_matrix[agent.id, self.world.predator.id]
-        self.fill_in_observation_row(observation, 1, predator_info)
+        if config.predator_present:
+            predator_info: AgentInfo = self.world.distance_matrix[agent.id, self.world.predator.id]
+            self.fill_in_observation_row(observation, 1, predator_info)
         # Store AgentInfo about all agents in agents_info
         agents_info = []
         for boid in self.world.boids:
@@ -77,7 +125,8 @@ class Environment(gym.Env):
         # Fill out the observation
         for row in range(2, config.nr_observed_agents+1):
             idx = row - 2
-            self.fill_in_observation_row(observation, row, agents_info[idx])
+            if idx < len(agents_info):
+                self.fill_in_observation_row(observation, row, agents_info[idx])
 
         return observation
 
@@ -96,6 +145,8 @@ class Environment(gym.Env):
         observation[0, 6] = z
 
     def fill_in_observation_row(self, observation, row, agent_info: AgentInfo):
+        if row >= self.nr_of_obs_rows:
+            return
         observation[row, 0] = agent_info.dist
         x, y, z = agent_info.vector
         observation[row, 1] = x

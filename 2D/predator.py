@@ -13,12 +13,13 @@ class Predator:
 
         self.up = np.array([0, 1, 0])
         self.world = world
-        self.pos = U.random_np_array(3, -1, 1)
+        self.pos = U.random_np_array(2, -1, 1)
         if config.grouped_spawn:
-            self.pos = U.random_np_array(3, -1, 0)
+            self.pos = U.random_np_array(2, -1, 0)
         random_direction = R.from_rotvec((random.uniform(0, 0), 0, random.uniform(0, 0)))
         self.forward = np.array(random_direction.apply(np.array((0, -1, 0))))
-        self.rotation = self.up
+        self.rotation = (random.random() * 2 - 1) * math.pi
+        self.forward = U.rot_to_vec(self.rotation)
         self.chase_counter = 0
         self.target = None
         self.id = 0
@@ -56,12 +57,12 @@ class Predator:
         self.change_heading_to_boid(self.target.vector)
 
     def change_heading_to_boid(self, boid_vector):
-        quaternion = U.capped_quaternion(self.forward, U.normalize(boid_vector), config.predator_turning_speed)
+        goal_rot = U.vec_to_rot(boid_vector)
+        change = U.wrapping_distance_radians(self.rotation, goal_rot)
+        change = U.capped_rotation(change, config.predator_turning_speed)
 
-        # Apply quaternion
-        change = R.from_quat(quaternion)
-        self.forward = U.normalize_nparray(change.apply(self.forward))
-        self.rotation = change.apply(self.rotation)
+        self.rotation = U.wrap_radians(self.rotation + change)
+        self.forward = U.rot_to_vec(self.rotation)
 
     def move(self):
         self.find_target()

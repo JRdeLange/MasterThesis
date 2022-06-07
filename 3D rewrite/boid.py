@@ -12,6 +12,8 @@ class Boid:
 
     def __init__(self):
         self.pos = U.random_np_array(3, -1, 1)
+        if config.grouped_spawn:
+            self.pos = U.random_np_array(3, 0, 1)
         x, y, z = U.normalize_nparray(U.random_np_array(3, -1, 1))
         random_quat = U.construct_quaternion(z, y, z, random.uniform(-math.pi, math.pi))
         self.heading = R.from_quat(random_quat)

@@ -1,35 +1,44 @@
-import random
-import math
 import numpy as np
-from utils import Utils
+import math
+from scipy.spatial.transform import Rotation as R
+import random
+import config
+from utils import Utils as U
 
 
 class Boid:
+    color = config.boid_color
+    speed = config.boid_speed
 
-    def __init__(self, world_size):
-        self.world_size = world_size
-        self.x = random.randrange(0, self.world_size)
-        self.y = random.randrange(0, self.world_size)
-        self.rotation = random.uniform(-math.pi, math.pi)
+    def __init__(self):
+        self.pos = U.random_np_array(2, -1, 1)
+        if config.grouped_spawn:
+            self.pos = U.random_np_array(2, 0, 1)
+        self.rotation = (random.random() * 2 - 1) * math.pi
+        self.rotation = 0
+        self.forward = U.rot_to_vec(self.rotation)
+        self.alive = True
+        self.id = None
 
+    def set_id(self, id):
+        self.id = id
 
     def move(self):
-        x, y = Utils.radians_to_vec(self.rotation)
-        self.x += x
-        self.y += y
-        self.rotation += 0.05 + random.randrange(-1, 1) / 50.
+        self.pos += self.forward * config.boid_speed
         self.wrap()
 
     def wrap(self):
-        if self.x > self.world_size:
-            self.x -= self.world_size
-        if self.y > self.world_size:
-            self.y -= self.world_size
-        if self.x < 0:
-            self.x += self.world_size
-        if self.y < 0:
-            self.y += self.world_size
+        for i, val in enumerate(self.pos):
+            if val > 1:
+                self.pos[i] = val - 2
+            elif val < - 1:
+                self.pos[i] = val + 2
 
-    def get_pos(self):
-        return self.x, self.y
+    def turn_by_rad(self, turn):
+        self.rotation = U.wrap_radians(self.rotation + turn)
+        self.forward = U.rot_to_vec(self.rotation)
+
+    def turn_by_quaternion(self, quaternion):
+        change = R.from_quat(quaternion)
+        self.forward = U.normalize_nparray(change.apply(self.forward))
 

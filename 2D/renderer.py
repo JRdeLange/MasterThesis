@@ -1,56 +1,91 @@
-import math
 import pyglet
 from pyglet.gl import *
-from utils import Utils
-from world import World
-from boid import Boid
-from shaders import Shaders
 import pyshaders as ps
+
+import config
+from shaders import Shaders
+from utils import Utils
+from models import Models
+from boid import Boid
+import math
+from scipy.spatial.transform import Rotation as R
+
+
+
+# Nice rendering example
+# https://github.com/pyglet/pyglet/blob/master/examples/3dmodel/model.py
+half_pi = 0.5 * math.pi
 
 
 class Renderer:
-    batch = pyglet.graphics.Batch()
 
-    def __init__(self, world, w, h):
-        self.window = pyglet.window.Window()
+    def __init__(self, height, width, world):
+        self.window = pyglet.window.Window(height, width)
         self.world = world
-        self.boid_model = pyglet.graphics.vertex_list(6, ('v2f', (0, 1, -0.7, -1, 0, -0.7,
-                                                                  0, 1, 0, -0.7, 0.7, -1,)))
-        self.boid_model_matrices = []
-
         self.shader_program = None
-        self.shader_program = ps.from_string(Shaders.basic_vert_shader, Shaders.basic_frag_shader)
-        self.shader_program.use()
+        self.init_shaders()
+        self.boid_model = Models.boid_model
+        self.wireframe_world_model = Models.wireframe_world_cube
+
 
         @self.window.event
         def on_draw():
             glClearColor(0.1, 0.1, 0.1, 1.0)
             glClear(GL_COLOR_BUFFER_BIT)
-            self.render_boids()
+            if config.predator_present:
+                self.render_predator()
+            self.render_passives()
+            self.render_box()
+
+    def init_shaders(self):
+        self.shader_program = None
+        self.shader_program = ps.from_string(Shaders.basic_vert_shader, Shaders.basic_frag_shader)
+        self.shader_program.use()
+
+        self.shader_program.uniforms.project = Utils.perspective(1, .6*math.pi, 0.1, 100)
+        self.shader_program.uniforms.color = (0.8, 0.8, 0.8, 1)
+
+    def render_passives(self):
+        scale = Utils.scale(.03, .03, .03)
+        self.shader_program.uniforms.color = Boid.color
+        reset_color = False
+        for boid in self.world.boids:
+            translate = Utils.translate(boid.pos[0], boid.pos[1], -1)
+            quat = Utils.construct_quaternion(0, 0, 1, boid.rotation - half_pi)
+            rots = R.from_quat(quat).as_euler('xyz')
+            rotate = Utils.rotate(rots[0], rots[1], rots[2])
+            total = Utils.combine_matrices(translate, scale, rotate)
+            if boid.id == self.world.the_one.id:
+                self.shader_program.uniforms.color = [.1, .6, .1]
+                reset_color = True
+            if config.predator_present and boid.id == self.world.predator.target.agent.id:
+                self.shader_program.uniforms.color = [.8, .4, .1]
+                reset_color = True
+            self.shader_program.uniforms.model = total
+            self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
+            if reset_color:
+                self.shader_program.uniforms.color = Boid.color
+
+    def render_predator(self):
+        predator = self.world.predator
+        scale = Utils.scale(.03, .03, .03)
+        translate = Utils.translate(predator.pos[0], predator.pos[1], -1)
+        quat = Utils.construct_quaternion(0, 0, 1, predator.rotation - half_pi)
+        rots = R.from_quat(quat).as_euler('xyz')
+        rotate = Utils.rotate(rots[0], rots[1], rots[2])
+        total = Utils.combine_matrices(translate, scale, rotate)
+        self.shader_program.uniforms.model = total
+        self.shader_program.uniforms.color = config.predator_color
+        self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
+
+    def render_box(self):
+        self.shader_program.uniforms.model = Utils.translate(0, 0, -2)
+        self.wireframe_world_model.draw(pyglet.gl.GL_LINES)
 
     def render(self):
-        self.boid_model.draw(GL_TRIANGLES)
-
-    def load_shaders(self):
-        try:
-            self.shader_program = ps.from_string(Shaders.basic_vert_shader, Shaders.basic_frag_shader)
-        except ps.ShaderCompilationError as e:
-            print(e.logs)
-            exit()
-
-    def render_boids(self):
-        for boid in self.world.get_boids():
-            trans_x, trans_y = Utils.world_to_screen(self.world, boid.x, boid.y)
-            trans = Utils.translate(trans_x, trans_y)
-            scale = Utils.scale(0.05, 0.05)
-            rot = Utils.rotate(0, 0, -boid.rotation)
-            mat = Utils.combine_matrices(trans, scale, rot)
-            self.shader_program.uniforms.model = mat
-            x, y = self.world.the_one.get_pos()
-            if abs(x - 50) < 25 and abs(y - 50) < 25:
-                self.shader_program.uniforms.color = (0.8, 0.8, 0, 1)
-            else:
-                self.shader_program.uniforms.color = (0.8, 0.8, 0.8, 1)
-            self.render()
-
+        for window in pyglet.app.windows:
+            window.switch_to()
+            window.dispatch_events()
+            window.dispatch_event('on_draw')
+            window.flip()
 

@@ -1,40 +1,55 @@
+from boid import Boid
 from world import World
 from renderer import Renderer
-from controller import Controller
-from utils import Utils
-from environment import Environment
 import pyglet
-import time
+import config
+from environment import Environment
+import numpy as np
+from utils import Utils
+import math
 
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Flatten
-from keras.optimizers import Adam
+'''from keras.models import Sequential, Model
+from keras.layers import Dense, Activation, Flatten, Input, Concatenate
+from tensorflow.keras.optimizers import Adam
 
-from rl.agents.dqn import DQNAgent
-from rl.policy import BoltzmannQPolicy
-from rl.memory import SequentialMemory
+from rlcustom.agents.ddpg import DDPGAgent
+from rlcustom.memory import SequentialMemory
+from rlcustom.random import OrnsteinUhlenbeckProcess
 
-# Press the green button in the gutter to run the script.
+from rlcustom.agents.dqn import DQNAgent
+from rlcustom.policy import BoltzmannQPolicy'''
+
+
+
+
 if __name__ == '__main__':
-    world = World(100)
-    world.gen_boids(0)
-    graphics = True
-    renderer = Renderer(world, 500, 500)
-    environment = Environment(world, True, renderer)
+    r = [[1, .5], [4, 6], [-1, .3]]
+    for x in r:
+        print(Utils.capped_rotation(x[0], x[1]))
+    world = World()
+    # world.spawn_boids(config.nr_of_boids)
+    # world.add_predator()
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment = Environment(world, renderer)
 
+    while True:
+        world.tick()
+        renderer.render()
 
-def main_loop():
-    prev_time = time.time() - 1
+    n_actions = environment.action_space.n
 
-    '''n_actions = environment.action_space.n
-
-    model = Sequential()
+    '''model = Sequential()
     model.add(Flatten(input_shape=(1,) + environment.observation_space.shape))
-    model.add(Dense(16))
+    model.add(Dense(32))
     model.add(Activation('relu'))
-    model.add(Dense(16))
+    model.add(Dense(32))
     model.add(Activation('relu'))
-    model.add(Dense(16))
+    model.add(Dense(32))
+    model.add(Activation('relu'))
+    model.add(Dense(32))
+    model.add(Activation('relu'))
+    model.add(Dense(32))
     model.add(Activation('relu'))
     model.add(Dense(n_actions))
     model.add(Activation('linear'))
@@ -42,40 +57,50 @@ def main_loop():
 
     memory = SequentialMemory(limit=50000, window_length=1)
     policy = BoltzmannQPolicy()
-    dqn = DQNAgent(model=model, nb_actions=n_actions, memory=memory, nb_steps_warmup=25, target_model_update=1e-2, policy=policy)
+    dqn = DQNAgent(model=model, nb_actions=n_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2,
+                   policy=policy, environment=environment)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
-    dqn.fit(environment, nb_steps=20000, visualize=False, verbose=2)
+    dqn.load_weights('groupedquadroturn14act9pass120000020000.h5f')'''
 
-    dqn.save_weights('dqn_weights.h5f', overwrite=True)
+    '''dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
 
-    environment.set_graphics(True)
+    dqn.save_weights('groupedquadroturn14act9pass160000020000.h5f', overwrite=True)
 
-    dqn.test(environment, nb_episodes=5, visualize=True)'''
+    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+            forward_other_agents=True)
 
-    while False:
+    dqn.save_weights('groupedquadroturn14act9pass200000020000.h5f', overwrite=True)
 
-        #print(1.0/(time.time()-prev_time))
-        prev_time = time.time()
+    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+            forward_other_agents=True)
 
-        keys = pyglet.window.key.KeyStateHandler()
-        state, reward, done, info = environment.step(4)
-        print(reward)
+    dqn.save_weights('groupedquadroturn14act9pass240000020000.h5f', overwrite=True)'''
 
-        #world.tick()
+    input("waiter")
+    #environment.print_info = True
 
-        #pyglet.clock.tick()
-        '''
-        if graphics:
-            for window in pyglet.app.windows:
-                window.switch_to()
-                window.dispatch_events()
-                window.dispatch_event('on_draw')
-                window.flip()
-        '''
+    '''dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=2000, forward_other_agents=True)'''
 
 
-main_loop()
+    '''nb_actions = environment.action_space.shape[0]
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print(environment.action_space.sample())
+    
+    actor = Sequential()
+    actor.add(Flatten(input_shape=(1,) + environment.observation_space.shape))
+    actor.add(Dense(16))
+    actor.add(Activation('relu'))
+    actor.add(Dense(16))
+    actor.add(Activation('relu'))
+    actor.add(Dense(16))
+    actor.add(Activation('relu'))
+    actor.add(Dense(16))
+    actor.add(Activation('relu'))
+    actor.add(Dense(16))
+    actor.add(Activation('relu'))
+    actor.add(Dense(nb_actions))
+    actor.add(Activation('tanh'))
+    print(actor.summary())'''
+
 

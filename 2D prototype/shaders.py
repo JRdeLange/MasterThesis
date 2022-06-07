@@ -4,14 +4,13 @@ class Shaders:
     basic_vert_shader = """
     #version 330
 
-    in vec3 pos;
+    in vec2 pos;
     
     uniform mat4 model;
-    uniform mat4 project;
 
     void main()
     {
-        gl_Position = project * model * vec4(pos, 1.0);
+        gl_Position = model * vec4(pos, 0.0, 1.0);
     }
     """
 

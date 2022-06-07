@@ -6,6 +6,7 @@ import config
 from environment import Environment
 import numpy as np
 from utils import Utils
+import math
 
 from keras.models import Sequential, Model
 from keras.layers import Dense, Activation, Flatten, Input, Concatenate
@@ -17,7 +18,6 @@ from rlcustom.random import OrnsteinUhlenbeckProcess
 
 from rlcustom.agents.dqn import DQNAgent
 from rlcustom.policy import BoltzmannQPolicy
-
 
 def main_loop():
     graphics = config.graphics
@@ -60,16 +60,26 @@ if __name__ == '__main__':
                    policy=policy, environment=environment)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
-    #dqn.load_weights('halfspeed14act19pass30000010000.h5f')
+    dqn.load_weights('groupedquadroturn14act9pass120000020000.h5f')
 
-    dqn.fit(environment, nb_steps=200000, visualize=True, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
+    '''dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
 
-    #dqn.save_weights('halfspeed14act9pass20000010000.h5f', overwrite=True)
+    dqn.save_weights('groupedquadroturn14act9pass160000020000.h5f', overwrite=True)
 
-    input("waiter")
-    environment.print_info = True
+    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+            forward_other_agents=True)
 
-    dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=1000, forward_other_agents=True)
+    dqn.save_weights('groupedquadroturn14act9pass200000020000.h5f', overwrite=True)
+
+    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+            forward_other_agents=True)
+
+    dqn.save_weights('groupedquadroturn14act9pass240000020000.h5f', overwrite=True)'''
+
+    #input("waiter")
+    #environment.print_info = True
+
+    dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=2000, forward_other_agents=True)
 
 
     '''nb_actions = environment.action_space.shape[0]

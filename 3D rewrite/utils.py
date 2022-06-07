@@ -24,10 +24,14 @@ class Utils:
         # Find axis
         # Check if forward and goal aren't (anti)parallel
         axis = np.cross(goal, forward)
-        if axis[0] == axis[1] == axis[2] == 0:
+        if Utils.has_zeroes(axis):
             # If they are (anti)parallel, move the goal a tiny tiny bit
-            goal = Utils.normalize([goal[0] + 0.01, goal[1] + 0.01, goal[2] + 0.01])
+            goal = Utils.normalize([goal[0] + 0.01, goal[1], goal[2] + 0.01])
             axis = np.cross(goal, forward)
+            if Utils.has_zeroes(axis):
+                # If they are (anti)parallel, move the goal a tiny tiny bit
+                goal = Utils.normalize([goal[0], goal[1] + 0.01, goal[2] + 0.01])
+                axis = np.cross(goal, forward)
 
         axis = Utils.normalize_nparray(axis)
         # Construct quaternion
@@ -37,9 +41,17 @@ class Utils:
         try:
             np.asarray_chkfinite(quaternion)
         except ValueError:
+            #<class 'ValueError'> [nan, nan, nan, 0.9995065603657316] [nan nan nan] -0.06283185307179587 [-0.57735027 -0.57735027 -0.57735027] [0.5773502691896258, 0.5773502691896258, 0.5773502691896258]
             print(ValueError, quaternion, axis, theta, forward, goal)
 
         return quaternion
+
+    @staticmethod
+    def has_zeroes(thing):
+        for number in thing:
+            if number != 0:
+                return False
+        return True
 
     @staticmethod
     def construct_quaternion(x, y, z, t):

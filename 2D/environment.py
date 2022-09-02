@@ -21,17 +21,13 @@ class Environment(gym.Env):
         # new forward direction [x, y, z]
         # self.action_space = spaces.Box(np.array([np.float32(-1), np.float32(-1), np.float32(-1)]),
         #                               np.array([np.float32(1), np.float32(1), np.float32(1)]))
-        self.action_space = spaces.Discrete(8)
+        self.action_space = spaces.Discrete(5)
         self.action_dict = {
             0: -1,
-            1: -.75,
-            2: -.5,
-            3: -.25,
-            4: 0,
-            5: .25,
-            6: .5,
-            7: .75,
-            8: 1
+            1: -.5,
+            2: 0,
+            3: .5,
+            4: 1
         }
 
         # [[self]

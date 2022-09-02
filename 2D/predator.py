@@ -11,7 +11,8 @@ from history import History
 class Predator:
 
     def __init__(self, world):
-
+        self.counter = 0
+        self.speed = config.predator_speed_slow
         self.up = np.array([0, 1, 0])
         self.world = world
         self.pos = U.random_np_array(2, -1, 1)
@@ -31,7 +32,7 @@ class Predator:
     # Find closest boid and change direction to it
     def find_target(self):
         target = None
-        if self.chase_counter == 0:
+        if self.counter % 20 == 0 or self.target:
             self.chase_counter = config.predator_chase_time
             # Distance of closest boid
             closest_distance = 1000
@@ -69,14 +70,17 @@ class Predator:
         self.forward = U.rot_to_vec(self.rotation)
 
     def move(self):
+        self.counter += 1
+        if self.counter == 80:
+            self.speed = config.predator_speed_fast
+        if self.counter == 100:
+            self.speed = config.predator_speed_slow
+            self.counter = 0
         if self.halt_counter:
             self.halt_counter -= 1
             return
         self.find_target()
-        if config.predator_lunging and self.target.dist < config.predator_lunge_distance:
-            self.pos += self.forward * config.predator_lunge_speed
-        else:
-            self.pos += self.forward * config.predator_speed
+        self.pos += self.forward * self.speed
         self.wrap()
         self.eat()
         self.history.add(self.pos)

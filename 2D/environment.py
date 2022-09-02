@@ -42,15 +42,14 @@ class Environment(gym.Env):
         # speed as well? No, put speed in forward vector
         # [distance,   vector,   forward]
         # [f,          f, f, f,  f, f, f]
+        # [pos -2, pos -1, pos now]
+        # [f, f,   f, f,   f, f]
         self.nr_of_obs_rows = config.nr_observed_agents + 1
         if config.predator_present:
             self.nr_of_obs_rows += 1
         self.observation_space = spaces.Box(low=-1, high=1,
-                                            shape=(self.nr_of_obs_rows, 5))
+                                            shape=(self.nr_of_obs_rows, 6))
 
-        self.observation_space = spaces.Dict(
-            ""
-        )
 
     def perform_agent_action(self, agent, action):
         change = self.action_dict[action] * config.boid_turning_speed
@@ -86,7 +85,7 @@ class Environment(gym.Env):
 
     def construct_observation(self, agent):
         # Make observation array
-        observation = np.zeros((self.nr_of_obs_rows, 5))
+        observation = np.zeros((self.nr_of_obs_rows, 6))
         # Fill in first row about self
         self.fill_in_first_observation_row(observation, agent)
         if self.nr_of_obs_rows == 1:
@@ -103,7 +102,7 @@ class Environment(gym.Env):
         # Sort the info based on distance
         agents_info.sort(key=self.extract_distance)
         # Fill out the observation
-        for row in range(2, config.nr_observed_agents+1):
+        for row in range(2, config.nr_observed_agents+2):
             idx = row - 2
             if idx < len(agents_info):
                 self.fill_in_observation_row(observation, row, agents_info[idx])
@@ -114,28 +113,20 @@ class Environment(gym.Env):
         return agent_info.dist
 
     def fill_in_first_observation_row(self, observation, agent):
-        observation[0, 0] = 0
-        x, y, z = agent.pos
-        observation[0, 1] = x
-        observation[0, 2] = y
-        observation[0, 3] = z
-        x, y, z = agent.forward
-        observation[0, 4] = x
-        observation[0, 5] = y
-        observation[0, 6] = z
+        idx = 0
+        for pos in agent.history.get():
+            for coord in pos:
+                observation[0, idx] = coord
+                idx += 1
 
     def fill_in_observation_row(self, observation, row, agent_info: AgentInfo):
         if row >= self.nr_of_obs_rows:
             return
-        observation[row, 0] = agent_info.dist
-        x, y, z = agent_info.vector
-        observation[row, 1] = x
-        observation[row, 2] = y
-        observation[row, 3] = z
-        x, y, z = agent_info.agent.forward
-        observation[row, 4] = x
-        observation[row, 5] = y
-        observation[row, 6] = z
+        idx = 0
+        for pos in agent_info.agent.history.get():
+            for coord in pos:
+                observation[row, idx] = coord
+                idx += 1
 
     def reset(self, **kwargs):
         self.world.reset()

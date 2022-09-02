@@ -4,6 +4,7 @@ from scipy.spatial.transform import Rotation as R
 import random
 import config
 from utils import Utils as U
+from history import History
 
 
 class Boid:
@@ -15,10 +16,11 @@ class Boid:
         if config.grouped_spawn:
             self.pos = U.random_np_array(2, 0, 1)
         self.rotation = (random.random() * 2 - 1) * math.pi
-        self.rotation = 0
         self.forward = U.rot_to_vec(self.rotation)
         self.alive = True
         self.id = None
+        self.history = History()
+        self.history.fill(self.pos)
 
     def set_id(self, id):
         self.id = id
@@ -26,6 +28,7 @@ class Boid:
     def move(self):
         self.pos += self.forward * config.boid_speed
         self.wrap()
+        self.history.add(self.pos)
 
     def wrap(self):
         for i, val in enumerate(self.pos):
@@ -41,4 +44,10 @@ class Boid:
     def turn_by_quaternion(self, quaternion):
         change = R.from_quat(quaternion)
         self.forward = U.normalize_nparray(change.apply(self.forward))
+
+    def respawn(self):
+        self.pos = U.random_np_array(2, -1, 1)
+        self.rotation = (random.random() * 2 - 1) * math.pi
+        self.forward = U.rot_to_vec(self.rotation)
+
 

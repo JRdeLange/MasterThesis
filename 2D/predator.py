@@ -5,6 +5,7 @@ import numpy as np
 import config
 import math
 from agentinfo import AgentInfo
+from history import History
 
 
 class Predator:
@@ -23,6 +24,9 @@ class Predator:
         self.chase_counter = 0
         self.target = None
         self.id = 0
+        self.halt_counter = 0
+        self.history = History()
+        self.history.fill(self.pos)
 
     # Find closest boid and change direction to it
     def find_target(self):
@@ -65,6 +69,9 @@ class Predator:
         self.forward = U.rot_to_vec(self.rotation)
 
     def move(self):
+        if self.halt_counter:
+            self.halt_counter -= 1
+            return
         self.find_target()
         if config.predator_lunging and self.target.dist < config.predator_lunge_distance:
             self.pos += self.forward * config.predator_lunge_speed
@@ -72,12 +79,13 @@ class Predator:
             self.pos += self.forward * config.predator_speed
         self.wrap()
         self.eat()
+        self.history.add(self.pos)
 
     def eat(self):
         if self.target.dist < config.predator_eating_distance:
-            self.target.agent.alive = False
-            self.world.remove_boid(self.target.agent)
+            self.world.eat_boid(self.target.agent)
             self.chase_counter = 0
+            self.halt_counter = config.predator_halt_time
 
     def wrap(self):
         for i, val in enumerate(self.pos):

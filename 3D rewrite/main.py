@@ -60,23 +60,31 @@ if __name__ == '__main__':
                    policy=policy, environment=environment)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
-    dqn.load_weights('groupedquadroturn14act9pass120000020000.h5f')
+    dqn.load_weights('shortchasetimewithhalt14act9pass440000020000.h5f')
 
-    '''dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
+    #dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=2000, forward_other_agents=True)
 
-    dqn.save_weights('groupedquadroturn14act9pass160000020000.h5f', overwrite=True)
 
-    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
-            forward_other_agents=True)
+    dqn.fit(environment, nb_steps=400000, visualize=True, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
 
-    dqn.save_weights('groupedquadroturn14act9pass200000020000.h5f', overwrite=True)
+    dqn.save_weights('shortchasetimewithhalt14act9pass360000020000.h5f', overwrite=True)
 
     dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
             forward_other_agents=True)
 
-    dqn.save_weights('groupedquadroturn14act9pass240000020000.h5f', overwrite=True)'''
+    dqn.save_weights('shortchasetimewithhalt14act9pass400000020000.h5f', overwrite=True)
 
-    #input("waiter")
+    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+            forward_other_agents=True)
+
+    dqn.save_weights('shortchasetimewithhalt14act9pass440000020000.h5f', overwrite=True)
+
+    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+            forward_other_agents=True)
+
+    dqn.save_weights('shortchasetimewithhalt14act9pass480000020000.h5f', overwrite=True)
+
+    input("waiter")
     #environment.print_info = True
 
     dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=2000, forward_other_agents=True)

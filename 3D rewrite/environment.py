@@ -123,11 +123,10 @@ class Environment(gym.Env):
         # Sort the info based on distance
         agents_info.sort(key=self.extract_distance)
         # Fill out the observation
-        for row in range(2, config.nr_observed_agents+1):
+        for row in range(2, config.nr_observed_agents+2):
             idx = row - 2
             if idx < len(agents_info):
                 self.fill_in_observation_row(observation, row, agents_info[idx])
-
         return observation
 
     def extract_distance(self, agent_info):

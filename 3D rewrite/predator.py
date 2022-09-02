@@ -20,6 +20,7 @@ class Predator:
         self.forward = np.array(random_direction.apply(np.array((0, -1, 0))))
         self.rotation = self.up
         self.chase_counter = 0
+        self.halt_counter = 0
         self.target = None
         self.id = 0
 
@@ -64,6 +65,9 @@ class Predator:
         self.rotation = change.apply(self.rotation)
 
     def move(self):
+        if self.halt_counter:
+            self.halt_counter -= 1
+            return
         self.find_target()
         if config.predator_lunging and self.target.dist < config.predator_lunge_distance:
             self.pos += self.forward * config.predator_lunge_speed
@@ -77,6 +81,7 @@ class Predator:
             self.target.agent.alive = False
             self.world.remove_boid(self.target.agent)
             self.chase_counter = 0
+            self.halt_counter = config.predator_halt_time
 
     def wrap(self):
         for i, val in enumerate(self.pos):

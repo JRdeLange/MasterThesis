@@ -54,11 +54,10 @@ class World:
         self.agents.append(self.the_one)
         self.boids.append(self.the_one)
 
-    def remove_boid(self, boid):
-        self.agents.remove(boid)
-        self.boids.remove(boid)
-        if boid in self.passives:
-            self.passives.remove(boid)
+    def eat_boid(self, boid):
+        if boid.id == self.the_one.id:
+            self.the_one.alive = False
+        boid.respawn()
 
     def fill_distance_matrix(self):
         self.distance_matrix = {}

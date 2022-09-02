@@ -1,3 +1,7 @@
+#todo verify rotation info correct for boids and predator
+#todo verify direction element of observation
+
+
 import math
 
 graphics = True

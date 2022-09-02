@@ -28,7 +28,7 @@ class Boid:
     def move(self):
         self.pos += self.forward * config.boid_speed
         self.wrap()
-        self.history.add(self.pos)
+        #self.history.add(self.pos)
 
     def wrap(self):
         for i, val in enumerate(self.pos):

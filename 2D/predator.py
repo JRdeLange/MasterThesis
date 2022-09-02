@@ -83,7 +83,7 @@ class Predator:
         self.pos += self.forward * self.speed
         self.wrap()
         self.eat()
-        self.history.add(self.pos)
+        #self.history.add(self.pos)
 
     def eat(self):
         if self.target.dist < config.predator_eating_distance:

@@ -65,10 +65,12 @@ class World:
         for x in range(n_agents):
             for y in range(x, n_agents):
                 vec = U.wrapping_distance_vector(self.agents[x].pos, self.agents[y].pos)
+                dir = U.vec_to_rot(vec)
                 min_vec = [-vec[0], -vec[1]]
+                min_dir = U.vec_to_rot(min_vec)
                 dist = U.vec2_magnitude(vec)
-                item = AgentInfo(self.agents[y], vec, dist)
-                min_item = AgentInfo(self.agents[x], min_vec, dist)
+                item = AgentInfo(self.agents[y], dir, dist)
+                min_item = AgentInfo(self.agents[x], min_dir, dist)
                 self.distance_matrix[(self.agents[x].id, self.agents[y].id)] = item
                 self.distance_matrix[(self.agents[y].id, self.agents[x].id)] = min_item
 

@@ -1,7 +1,7 @@
 
 
 class AgentInfo:
-    def __init__(self, agent, vector, dist):
+    def __init__(self, agent, direction, dist):
         self.agent = agent
-        self.vector = vector
+        self.direction = direction
         self.dist = dist

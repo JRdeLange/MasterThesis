@@ -84,7 +84,7 @@ class Environment(gym.Env):
 
     def construct_observation(self, agent):
         # Make observation array
-        observation = np.zeros((self.nr_of_obs_rows, 6))
+        observation = np.zeros((self.nr_of_obs_rows, 3))
         # Fill in first row about self
         self.fill_in_first_observation_row(observation, agent)
         if self.nr_of_obs_rows == 1:
@@ -112,7 +112,7 @@ class Environment(gym.Env):
         return agent_info.dist
 
     def fill_in_first_observation_row(self, observation, agent):
-        observation[0, 3] = agent.rotation
+        observation[0, 2] = agent.rotation
 
     def fill_in_observation_row(self, observation, row, agent_info: AgentInfo):
         if row >= self.nr_of_obs_rows:

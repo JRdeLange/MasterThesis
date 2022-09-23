@@ -10,8 +10,8 @@ speedup = .33
 
 # World
 # The number of observed agents does not include itself or the predator
-nr_observed_agents = 3
-nr_of_boids = 19
+nr_observed_agents = 5
+nr_of_boids = 10
 predator_present = True
 grouped_spawn = True
 predator_halting = True

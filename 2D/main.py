@@ -34,15 +34,25 @@ if __name__ == '__main__':
 
     model = Sequential()
     model.add(Flatten(input_shape=(1,) + environment.observation_space.shape))
-    model.add(Dense(32))
+    model.add(Dense(16))
     model.add(Activation('relu'))
-    model.add(Dense(32))
+    model.add(Dense(16))
     model.add(Activation('relu'))
-    model.add(Dense(32))
+    model.add(Dense(16))
     model.add(Activation('relu'))
-    model.add(Dense(32))
+    model.add(Dense(16))
     model.add(Activation('relu'))
-    model.add(Dense(32))
+    model.add(Dense(16))
+    model.add(Activation('relu'))
+    model.add(Dense(16))
+    model.add(Activation('relu'))
+    model.add(Dense(16))
+    model.add(Activation('relu'))
+    model.add(Dense(16))
+    model.add(Activation('relu'))
+    model.add(Dense(16))
+    model.add(Activation('relu'))
+    model.add(Dense(16))
     model.add(Activation('relu'))
     model.add(Dense(n_actions))
     model.add(Activation('linear'))
@@ -56,20 +66,20 @@ if __name__ == '__main__':
 
     #dqn.load_weights('reworked1500000.h5f')
 
-    dqn.fit(environment, nb_steps=300000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+    dqn.fit(environment, nb_steps=250000, visualize=False, verbose=2, nb_max_episode_steps=10000,
             forward_other_agents=True)
 
-    dqn.save_weights('reworked180000.h5f', overwrite=True)
+    dqn.save_weights('copy250000.h5f', overwrite=True)
 
-    dqn.fit(environment, nb_steps=300000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+    dqn.fit(environment, nb_steps=250000, visualize=False, verbose=2, nb_max_episode_steps=10000,
             forward_other_agents=True)
 
-    dqn.save_weights('reworked210000.h5f', overwrite=True)
+    dqn.save_weights('copy500000.h5f', overwrite=True)
 
-    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000,
+    dqn.fit(environment, nb_steps=500000, visualize=False, verbose=2, nb_max_episode_steps=10000,
             forward_other_agents=True)
 
-    dqn.save_weights('reworked250000.h5f', overwrite=True)
+    dqn.save_weights('copy1000000.h5f', overwrite=True)
 
     input("waiter")
     #environment.print_info = True

@@ -32,7 +32,7 @@ class Predator:
     # Find closest boid and change direction to it
     def find_target(self):
         target = None
-        if self.counter % 20 == 0 or self.target:
+        if self.counter % 20 == 0 or self.target is None:
             self.chase_counter = config.predator_chase_time
             # Distance of closest boid
             closest_distance = 1000
@@ -59,10 +59,10 @@ class Predator:
         self.target = target
 
         # Change direction
-        self.change_heading_to_boid(self.target.vector)
+        self.change_heading_to_boid(self.target.direction)
 
-    def change_heading_to_boid(self, boid_vector):
-        goal_rot = U.vec_to_rot(boid_vector)
+    def change_heading_to_boid(self, direction):
+        goal_rot = direction
         change = U.wrapping_distance_radians(self.rotation, goal_rot)
         change = U.capped_rotation(change, config.predator_turning_speed)
 

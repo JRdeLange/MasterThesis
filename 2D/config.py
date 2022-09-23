@@ -16,10 +16,17 @@ predator_present = True
 grouped_spawn = True
 predator_halting = True
 
+# Collect data for analysis
+record_keeping = True
+# Gather data every gather_frequency ticks
+record_frequency = 1000
+
+
 # Boid
 boid_speed = 0.0333 #from OG, 1/60th of space per step
 boid_color = (0.8, 0.8, 0.8, 1)
 boid_turning_speed = 0.5 * math.pi
+
 
 # Predator
 predator_speed = 0.0333 #from OG, 1/60th of space per step
@@ -36,6 +43,7 @@ predator_confusion_threshold = 2
 predator_chase_time = 20
 predator_halt_time = 0
 predator_eating_distance = 0.06666 #from OG, eat if distance is less than 2/60th of space
+
 
 # Window
 height = 800

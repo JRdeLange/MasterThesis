@@ -8,6 +8,7 @@ from agentinfo import AgentInfo
 from theone import TheOne
 import pyglet
 from renderer import Renderer
+from record import EpisodeSlice, Record
 
 
 class Environment(gym.Env):
@@ -17,6 +18,10 @@ class Environment(gym.Env):
         self.current_boid_index = None
         self.world = world
         self.print_info = False
+        if config.record_keeping:
+            self.record = Record()
+            self.world.record = self.record
+
         # [axis x, axis y, axis z, angle]
         # new forward direction [x, y, z]
         # self.action_space = spaces.Box(np.array([np.float32(-1), np.float32(-1), np.float32(-1)]),
@@ -56,10 +61,8 @@ class Environment(gym.Env):
         agent.turn_by_rad(change)
 
     def step(self, action):
+
         the_one: TheOne = self.world.the_one
-        # for action maybe parameterize the action space
-        # How to deal with action: https://stackoverflow.com/questions/22099490/calculate-vector-after-rotating-it-towards-another-by-angle-%CE%B8-in-3d-space
-        #goal = U.normalize_nparray(action)
         self.perform_agent_action(the_one, action)
         self.world.tick()
         state = self.construct_observation(the_one)
@@ -68,14 +71,16 @@ class Environment(gym.Env):
         info = {}
         if self.print_info:
             print(action, the_one.forward, reward)
+
+        if (self.world.current_tick % config.record_frequency == 0) and config.record_keeping:
+            self.keep_record(done)
+
         return state, reward, done, info
 
-    def get_reward_test(self):
-        return self.world.the_one.forward[1]
-        pos = self.world.the_one.pos
-        if pos[1] < 0:
-            return 1
-        return -1
+    def keep_record(self, done):
+        if done:
+            self.record.end_episode(self.world.current_tick)
+        self.record.add_episode_slice(self.world)
 
     def get_reward(self):
         if self.world.the_one.alive:

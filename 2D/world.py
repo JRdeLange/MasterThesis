@@ -4,6 +4,7 @@ from utils import Utils as U
 from agentinfo import AgentInfo
 from theone import TheOne
 import config
+from record import Record, EpisodeSlice
 
 '''
 World goes from -1,-1,-1 to 1,1,1
@@ -23,6 +24,10 @@ class World:
         # ID 0 is reserved for the predator
         # ID 1 is reserved for The One
         self.next_boid_ID = 2
+        # first tick is 0 this way
+        self.current_tick = -1
+        if config.record_keeping:
+            self.record = None
 
     def spawn_boids(self, n):
         self.n_boids += n
@@ -35,6 +40,7 @@ class World:
         self.passives += self.boids
 
     def tick(self):
+        self.current_tick += 1
         if self.predator:
             self.predator.move()
 
@@ -55,6 +61,7 @@ class World:
         self.boids.append(self.the_one)
 
     def eat_boid(self, boid):
+        self.record.boid_eaten()
         if boid.id == self.the_one.id:
             self.the_one.alive = False
         boid.respawn()
@@ -96,6 +103,7 @@ class World:
         # ID 0 is reserved for the predator
         # ID 1 is reserved for The One
         self.next_boid_ID = 2
+        self.current_tick = 0
 
 
 

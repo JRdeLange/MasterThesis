@@ -20,8 +20,6 @@ from rlcustom.agents.dqn import DQNAgent
 from rlcustom.policy import BoltzmannQPolicy
 
 
-
-
 if __name__ == '__main__':
     world = World()
     # world.spawn_boids(config.nr_of_boids)

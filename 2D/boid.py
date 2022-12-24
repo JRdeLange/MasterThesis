@@ -2,18 +2,17 @@ import numpy as np
 import math
 from scipy.spatial.transform import Rotation as R
 import random
-import config
+from config import Config
 from utils import Utils as U
 from history import History
 
 
 class Boid:
-    color = config.boid_color
-    speed = config.boid_speed
 
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.pos = U.random_np_array(2, -1, 1)
-        if config.grouped_spawn:
+        if self.config.grouped_spawn:
             self.pos = U.random_np_array(2, 0, 1)
         self.rotation = (random.random() * 2 - 1) * math.pi
         self.forward = U.rot_to_vec(self.rotation)
@@ -22,11 +21,12 @@ class Boid:
         self.history = History()
         self.history.fill(self.pos)
 
+
     def set_id(self, id):
         self.id = id
 
     def move(self):
-        self.pos += self.forward * config.boid_speed
+        self.pos += self.forward * self.config.boid_speed
         self.wrap()
         #self.history.add(self.pos)
 

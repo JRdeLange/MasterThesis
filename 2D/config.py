@@ -1,50 +1,55 @@
-#todo verify rotation info correct for boids and predator
-#todo verify direction element of observation
-
-
 import math
 
-graphics = True
 
-speedup = .33
+class Config:
 
-# World
-# The number of observed agents does not include itself or the predator
-nr_observed_agents = 5
-nr_of_boids = 10
-predator_present = True
-grouped_spawn = True
-predator_halting = True
+    def __init__(self, configuration=0):
+        # "Standard" configuration:
+        self.run_name = "test"
 
-# Collect data for analysis
-record_keeping = True
-# Gather data every gather_frequency ticks
-record_frequency = 1000
+        # World
+        # The number of observed agents does not include itself or the predator
+        self.nr_observed_agents = 5
+        self.nr_of_boids = 10  # on top of The One
+        self.predator_present = True
+        self.grouped_spawn = False
+        self.predator_halting = True
 
+        # Collect data for analysis
+        self.record_keeping = True
+        # Gather data every gather_frequency ticks
+        self.record_frequency = 100
 
-# Boid
-boid_speed = 0.0333 #from OG, 1/60th of space per step
-boid_color = (0.8, 0.8, 0.8, 1)
-boid_turning_speed = 0.5 * math.pi
+        # Boid
+        self.boid_speed = 0.0333  # from OG, 1/60th of space per step
+        self.boid_color = (0.8, 0.8, 0.8, 1)
+        self.boid_turning_speed = 0.5 * math.pi  # From OG, 90 degrees
 
+        # Predator
+        self.predator_speed = 0.0333  # from OG, 1/60th of space per step
+        self.predator_speed_slow = 0.0333
+        self.predator_speed_fast = 0.0533
+        self.predator_lunging = False
+        self.predator_lunge_speed = 0.013
+        self.predator_lunge_distance = 0.1
+        self.predator_turning_speed = .25 * math.pi
+        self.predator_color = (0.8, 0.2, 0.2, 1)
+        self.predator_confusion = True
+        self.predator_confusion_distance = .4  # from OG, .2 of space
+        self.predator_confusion_threshold = 2
+        self.predator_chase_time = 20
+        self.predator_halt_time = 0
+        self.predator_eating_distance = 0.06666  # from OG, eat if distance is less than 2/60th of space
 
-# Predator
-predator_speed = 0.0333 #from OG, 1/60th of space per step
-predator_speed_slow = 0.0333
-predator_speed_fast = 0.0533
-predator_lunging = True
-predator_lunge_speed = 0.013
-predator_lunge_distance = 0.3 * speedup
-predator_turning_speed = .25 * math.pi
-predator_color = (0.8, 0.2, 0.2, 1)
-predator_confusion = True
-predator_confusion_distance = .4 #from OG, .2 of space
-predator_confusion_threshold = 2
-predator_chase_time = 20
-predator_halt_time = 0
-predator_eating_distance = 0.06666 #from OG, eat if distance is less than 2/60th of space
+        # Window
+        self.height = 800
+        self.width = 800
+        self.graphics = True
 
+        self.change_to_configuration(configuration)
 
-# Window
-height = 800
-width = 800
+    def change_to_configuration(self, configuration):
+        if configuration == 1:
+            pass
+        elif configuration == 2:
+            pass

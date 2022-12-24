@@ -2,23 +2,24 @@ import numpy as np
 import gym
 from gym import spaces
 import math
-import config
+from config import Config
 from utils import Utils as U
 from agentinfo import AgentInfo
 from theone import TheOne
 import pyglet
 from renderer import Renderer
-from record import EpisodeSlice, Record
+from record import Slice, Record
 
 
 class Environment(gym.Env):
 
-    def __init__(self, world, renderer):
+    def __init__(self, world, renderer, config):
+        self.config = config
         self.renderer = renderer
         self.current_boid_index = None
         self.world = world
         self.print_info = False
-        if config.record_keeping:
+        if self.config.record_keeping:
             self.record = Record()
             self.world.record = self.record
 
@@ -49,15 +50,15 @@ class Environment(gym.Env):
         # Using the following just like OG
         # [distance, direction, orientation]
         # [f,        f,         f]
-        self.nr_of_obs_rows = config.nr_observed_agents + 1
-        if config.predator_present:
+        self.nr_of_obs_rows = self.config.nr_observed_agents + 1
+        if self.config.predator_present:
             self.nr_of_obs_rows += 1
         self.observation_space = spaces.Box(low=-1, high=1,
                                             shape=(self.nr_of_obs_rows, 3))
 
 
     def perform_agent_action(self, agent, action):
-        change = self.action_dict[action] * config.boid_turning_speed
+        change = self.action_dict[action] * self.config.boid_turning_speed
         agent.turn_by_rad(change)
 
     def step(self, action):
@@ -72,15 +73,16 @@ class Environment(gym.Env):
         if self.print_info:
             print(action, the_one.forward, reward)
 
-        if (self.world.current_tick % config.record_frequency == 0) and config.record_keeping:
-            self.keep_record(done)
+        if (self.world.overarching_tick % self.config.record_frequency == 0) and self.config.record_keeping:
+            self.keep_record()
 
         return state, reward, done, info
 
-    def keep_record(self, done):
-        if done:
-            self.record.end_episode(self.world.current_tick)
-        self.record.add_episode_slice(self.world)
+    def keep_record(self):
+        self.record.add_slice(self.world)
+
+    def save_record(self, name):
+        self.record.save_to_file(name, self.config)
 
     def get_reward(self):
         if self.world.the_one.alive:
@@ -95,7 +97,7 @@ class Environment(gym.Env):
         if self.nr_of_obs_rows == 1:
             return observation
         # Fill in second row about predator
-        if config.predator_present:
+        if self.config.predator_present:
             predator_info: AgentInfo = self.world.distance_matrix[agent.id, self.world.predator.id]
             self.fill_in_observation_row(observation, 1, predator_info)
         # Store AgentInfo about all agents in agents_info
@@ -106,7 +108,7 @@ class Environment(gym.Env):
         # Sort the info based on distance
         agents_info.sort(key=self.extract_distance)
         # Fill out the observation
-        for row in range(2, config.nr_observed_agents+2):
+        for row in range(2, self.config.nr_observed_agents+2):
             idx = row - 2
             if idx < len(agents_info):
                 self.fill_in_observation_row(observation, row, agents_info[idx])

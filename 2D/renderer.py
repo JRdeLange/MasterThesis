@@ -32,7 +32,7 @@ class Renderer:
         def on_draw():
             glClearColor(0.1, 0.1, 0.1, 1.0)
             glClear(GL_COLOR_BUFFER_BIT)
-            if config.predator_present:
+            if self.world.config.predator_present:
                 self.render_predator()
             self.render_passives()
             self.render_box()
@@ -47,7 +47,7 @@ class Renderer:
 
     def render_passives(self):
         scale = Utils.scale(.03, .03, .03)
-        self.shader_program.uniforms.color = Boid.color
+        self.shader_program.uniforms.color = self.world.config.boid_color
         reset_color = False
         for boid in self.world.boids:
             translate = Utils.translate(boid.pos[0], boid.pos[1], -1)
@@ -58,13 +58,13 @@ class Renderer:
             if boid.id == self.world.the_one.id:
                 self.shader_program.uniforms.color = [.1, .6, .1]
                 reset_color = True
-            if config.predator_present and boid.id == self.world.predator.target.agent.id:
+            if self.world.config.predator_present and boid.id == self.world.predator.target.agent.id:
                 self.shader_program.uniforms.color = [.8, .4, .1]
                 reset_color = True
             self.shader_program.uniforms.model = total
             self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
             if reset_color:
-                self.shader_program.uniforms.color = Boid.color
+                self.shader_program.uniforms.color = self.world.config.boid_color
 
     def render_predator(self):
         predator = self.world.predator
@@ -75,7 +75,7 @@ class Renderer:
         rotate = Utils.rotate(rots[0], rots[1], rots[2])
         total = Utils.combine_matrices(translate, scale, rotate)
         self.shader_program.uniforms.model = total
-        self.shader_program.uniforms.color = config.predator_color
+        self.shader_program.uniforms.color = self.world.config.predator_color
         self.boid_model.draw(pyglet.gl.GL_TRIANGLES)
 
     def render_box(self):

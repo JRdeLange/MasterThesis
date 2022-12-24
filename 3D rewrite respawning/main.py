@@ -72,7 +72,7 @@ if __name__ == '__main__':
     #dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=2000, forward_other_agents=True)
 
 
-    dqn.fit(environment, nb_steps=400000, visualize=False, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
+    dqn.fit(environment, nb_steps=400000, visualize=True, verbose=2, nb_max_episode_steps=10000, forward_other_agents=True)
 
     dqn.save_weights('Firsttrial1000000.h5f', overwrite=True)
 

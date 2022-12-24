@@ -3,8 +3,8 @@ from predator import Predator
 from utils import Utils as U
 from agentinfo import AgentInfo
 from theone import TheOne
-import config
-from record import Record, EpisodeSlice
+
+from record import Record, Slice
 
 '''
 World goes from -1,-1,-1 to 1,1,1
@@ -13,7 +13,7 @@ World goes from -1,-1,-1 to 1,1,1
 
 class World:
 
-    def __init__(self):
+    def __init__(self, config):
         self.n_boids = 0
         self.boids = []
         self.passives = []
@@ -26,13 +26,16 @@ class World:
         self.next_boid_ID = 2
         # first tick is 0 this way
         self.current_tick = -1
-        if config.record_keeping:
+        # ticks independent from resetting world for recordkeeping
+        self.overarching_tick = -1
+        self.config = config
+        if self.config.record_keeping:
             self.record = None
 
     def spawn_boids(self, n):
         self.n_boids += n
         for x in range(n):
-            boid = Boid()
+            boid = Boid(self.config)
             boid.set_id(self.next_boid_ID)
             self.boids.append(boid)
             self.next_boid_ID += 1
@@ -41,6 +44,7 @@ class World:
 
     def tick(self):
         self.current_tick += 1
+        self.overarching_tick += 1
         if self.predator:
             self.predator.move()
 
@@ -56,7 +60,7 @@ class World:
 
     def add_the_one(self):
         self.n_boids += 1
-        self.the_one = TheOne()
+        self.the_one = TheOne(self.config)
         self.agents.append(self.the_one)
         self.boids.append(self.the_one)
 
@@ -87,9 +91,9 @@ class World:
 
     def spawn_things(self):
         self.add_the_one()
-        if config.predator_present:
+        if self.config.predator_present:
             self.add_predator()
-        self.spawn_boids(config.nr_of_boids)
+        self.spawn_boids(self.config.nr_of_boids)
         self.fill_distance_matrix()
 
     def reset_vars(self):
@@ -103,7 +107,7 @@ class World:
         # ID 0 is reserved for the predator
         # ID 1 is reserved for The One
         self.next_boid_ID = 2
-        self.current_tick = 0
+        self.current_tick = -1
 
 
 

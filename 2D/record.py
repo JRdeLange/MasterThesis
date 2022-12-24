@@ -1,47 +1,41 @@
 class Record:
 
     def __init__(self):
-        self.episodes = []
+        self.slices = []
 
-    def new_episode(self):
-        self.episodes.append(EpisodeRecord())
-
-    def end_episode(self, ticks):
-        self.episodes[-1].set_episode_length(ticks)
-
-    def add_episode_slice(self, world):
+    def add_slice(self, world):
         # If the latest episode has an episode_length set, it is finished, so we need a new one
-        if self.episodes[-1].episode_length is not None:
-            self.new_episode()
-        episode_slice = EpisodeSlice(world.current_tick, world.predator, world.boids)
-        self.episodes[-1].add_episode_slice(episode_slice)
+        episode_slice = Slice(world.overarching_tick, world.predator, world.boids)
+        self.slices.append(episode_slice)
 
     def boid_eaten(self):
-        self.episodes[-1].boid_eaten()
+        self.slices[-1].boid_eaten()
+
+    def save_to_file(self, name, config):
+        with open(str(name)+".txt", "w") as f:
+
+            # Header with nr of slices, config and data layout
+            f.write(str(len(self.slices)))
+            f.write(str(vars(config)) + '\n')
+            f.write("tick\nboids eaten\npredator position\npredator rotation\n")
+            f.write("agent positions (and)\nagent rotations (interleaved)\n----\n")
+
+            for slice in self.slices:
+                f.write(str(slice.tick) + '\n')
+                f.write(str(slice.boids_eaten) + '\n')
+                f.write(str(slice.predator_pos[0]) + " " + str(slice.predator_pos[1]) + '\n')
+                f.write(str(slice.predator_rotation) + '\n')
+                for i in range(len(slice.agents_pos)):
+                    f.write(str(slice.agents_pos[i][0]) + " " + str(slice.agents_pos[i][1]) + '\n')
+                    f.write(str(slice.agents_rotation[i]) + '\n')
+                f.write('---\n')
 
 
-class EpisodeRecord:
-
-    def __init__(self):
-        self.episode_slices = []
-        self.boids_eaten = 0
-        self.episode_length = None
-
-    def add_episode_slice(self, episode_slice):
-        episode_slice.set_boids_eaten_so_far(self.boids_eaten)
-        self.episode_slices.append(episode_slice)
-
-    def boid_eaten(self):
-        self.boids_eaten += 1
-
-    def set_episode_length(self, ticks):
-        self.episode_length = ticks
-
-
-class EpisodeSlice:
+class Slice:
 
     def __init__(self, tick, predator, boids):
         self.tick = tick
+        self.boids_eaten = 0
         self.predator_pos = predator.pos
         self.predator_rotation = predator.rotation
         self.agents_pos = []
@@ -50,9 +44,8 @@ class EpisodeSlice:
             self.agents_pos.append(boid.pos)
             self.agents_rotation.append(boid.rotation)
 
-        self.boids_eaten_so_far = 0
 
-    def set_boids_eaten_so_far(self, nr_eaten):
-        self.boids_eaten_so_far = nr_eaten
+    def boid_eaten(self):
+        self.boids_eaten += 1
 
 

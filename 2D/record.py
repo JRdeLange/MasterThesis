@@ -15,7 +15,7 @@ class Record:
         with open(str(name)+".txt", "w") as f:
 
             # Header with nr of slices, config and data layout
-            f.write(str(len(self.slices)))
+            f.write(str(len(self.slices)) + '\n')
             f.write(str(vars(config)) + '\n')
             f.write("tick\nboids eaten\npredator position\npredator rotation\n")
             f.write("agent positions (and)\nagent rotations (interleaved)\n----\n")

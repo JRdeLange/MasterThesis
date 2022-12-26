@@ -15,39 +15,40 @@ class Reader:
         predator = []
         boids = []
 
+
+
         with open(filename, "r") as file:
             # Get nr of slices
             nr_of_slices = int(file.readline())
-            # Get rid if rest of header
+            # Get rid of rest of header
             line = file.readline()
-            while line[0] != '-':
+            while line[1] != '-':
                 line = file.readline()
 
             for i in range(nr_of_slices):
-                self.read_slice(file)
+                self.read_slice(file, record)
 
+        return record
 
-    def read_slice(self, file):
+    def read_slice(self, file, record):
         tick = int(file.readline())
-        boids_eaten = int(file.readline)
+        boids_eaten = int(file.readline())
+
         pos = self.parse_tuple(file.readline())
+        rot = float(file.readline())
+        predator = AgentData(pos, rot)
 
-        predator = AgentData(x, y)
-
+        boids = []
         line = file.readline()
-        while line[0] != '-':
-            pos = line.split()
+
+        while line[1] != '-':
+            pos = self.parse_tuple(line)
             rot = float(file.readline())
+            boids.append(AgentData(pos, rot))
+            line = file.readline()
 
-
+        record.add_slice(tick, boids_eaten, predator, boids)
 
     def parse_tuple(self, line):
-        line = line.split()
-        x = float(line[1])
-        y = float(line[2][:-1])
-        return [x, y]
-
-
-
-
-
+        line = line.split(' ')
+        return [float(number) for number in line]

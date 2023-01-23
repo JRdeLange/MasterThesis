@@ -15,8 +15,6 @@ class Reader:
         predator = []
         boids = []
 
-
-
         with open(filename, "r") as file:
             # Get nr of slices
             nr_of_slices = int(file.readline())
@@ -27,6 +25,7 @@ class Reader:
 
             for i in range(nr_of_slices):
                 self.read_slice(file, record)
+                print("Read slice " + str(i) + " out of " + str(nr_of_slices))
 
         return record
 

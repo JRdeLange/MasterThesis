@@ -1,2 +1,2 @@
-model_checkpoint_path: "test500.h5f"
-all_model_checkpoint_paths: "test500.h5f"
+model_checkpoint_path: "4_other_boids1000000.h5f"
+all_model_checkpoint_paths: "4_other_boids1000000.h5f"

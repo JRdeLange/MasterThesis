@@ -54,15 +54,15 @@ def prepare_run(world, renderer, config):
     dqn = DQNAgent(model=model, nb_actions=n_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2,
                    policy=policy, environment=environment)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+    environment.set_dqn_agent(dqn)
     return environment, model, dqn
 
 
 def run(dqn, environment, steps, times, name):
     for i in range(times):
-        dqn.fit(environment, nb_steps=steps, visualize=True, verbose=2, nb_max_episode_steps=10000,
-                forward_other_agents=True)
-        #dqn.save_weights(name + str(steps * (i + 1)) + '.h5f', overwrite=True)
-
+        dqn.fit(environment, nb_steps=steps, visualize=False, verbose=2, nb_max_episode_steps=10000)
+        dqn.save_weights(name + str(steps * (i + 1)) + '.h5f', overwrite=True)
+        environment.save_record(name + str(i))
 
 def main():
     config = Config(0)
@@ -71,19 +71,23 @@ def main():
 
     world.spawn_things()
     renderer = Renderer(800, 800, world)
-
     environment, model, dqn = prepare_run(world, renderer, config)
+    dqn.load_weights('4_other_boids1000000.h5f')
+    #run(dqn, environment, 100000, 10, config.run_name)
+    #environment.save_record(config.run_name + "total")
 
-    run(dqn, environment, 500, 4, config.run_name)
-    environment.save_record(config.run_name)
+
+    dqn.test(environment, nb_episodes=10, visualize=True, nb_max_episode_steps=2000)
 
 
     input("waiter")
     # environment.print_info = True
-    # dqn.load_weights('reworked1500000.h5f')
 
-    dqn.test(environment, nb_episodes=5, visualize=True, nb_max_episode_steps=2000, forward_other_agents=True)
+
+    dqn.test(environment, nb_episodes=10, visualize=True, nb_max_episode_steps=2000)
 
 
 if __name__ == '__main__':
     main()
+
+

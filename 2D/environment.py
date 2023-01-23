@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import numpy as np
 import gym
 from gym import spaces
@@ -18,6 +20,7 @@ class Environment(gym.Env):
         self.renderer = renderer
         self.current_boid_index = None
         self.world = world
+        self.dqn_agent = None
         self.print_info = False
         if self.config.record_keeping:
             self.record = Record()
@@ -56,15 +59,24 @@ class Environment(gym.Env):
         self.observation_space = spaces.Box(low=-1, high=1,
                                             shape=(self.nr_of_obs_rows, 3))
 
+    def set_dqn_agent(self, dqn_agent):
+        self.dqn_agent = dqn_agent
+
+    def perform_passives_actions(self):
+        for agent in self.world.passives:
+            state = self.construct_observation(agent)
+            state = deepcopy(state)
+            action = self.dqn_agent.forward(state)
+            self.perform_agent_action(agent, action)
 
     def perform_agent_action(self, agent, action):
         change = self.action_dict[action] * self.config.boid_turning_speed
         agent.turn_by_rad(change)
 
     def step(self, action):
-
         the_one: TheOne = self.world.the_one
         self.perform_agent_action(the_one, action)
+        self.perform_passives_actions()
         self.world.tick()
         state = self.construct_observation(the_one)
         reward = self.get_reward()

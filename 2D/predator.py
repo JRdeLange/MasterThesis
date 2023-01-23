@@ -33,7 +33,7 @@ class Predator:
     # Find closest boid and change direction to it
     def find_target(self):
         target = None
-        if self.counter % 20 == 0 or self.target is None:
+        if self.chase_counter == 0 or self.target is None:
             self.chase_counter = self.config.predator_chase_time
             # Distance of closest boid
             closest_distance = 1000
@@ -53,6 +53,41 @@ class Predator:
             if self.config.predator_confusion:
                 if len(close_enough) > 0:
                     target = random.choice(close_enough)
+        else:
+            target = self.world.distance_matrix[(self.id, self.target.agent.id)]
+            self.chase_counter -= 1
+
+        self.target = target
+
+        # Change direction
+        self.change_heading_to_boid(self.target.direction)
+
+    # Find target but confusion works through boids close to each other instead of boids close to predator
+    def find_target_alternate_confusion(self):
+        target = None
+        if self.chase_counter == 0 or self.target is None:
+            self.chase_counter = self.config.predator_chase_time
+            # Distance of closest boid
+            closest_distance = 1000
+
+            # Find closest boid
+            for boid in self.world.boids:
+                current = self.world.distance_matrix[(self.id, boid.id)]
+                if current.dist < closest_distance:
+                    closest_distance = current.dist
+                    target = current
+
+            # List boids close to closest
+            close_to_closest = []
+            for boid in self.world.boids:
+                current = self.world.distance_matrix[(target.id, boid.id)]
+                if current.dist > self.config.predator_confusion_distance:
+                    close_to_closest.append(current)
+
+            # Pick randomly from list
+            if self.config.predator_confusion:
+                target = random.choice(close_to_closest)
+
         else:
             target = self.world.distance_matrix[(self.id, self.target.agent.id)]
             self.chase_counter -= 1

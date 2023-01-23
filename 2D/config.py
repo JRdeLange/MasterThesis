@@ -5,20 +5,20 @@ class Config:
 
     def __init__(self, configuration=0):
         # "Standard" configuration:
-        self.run_name = "test"
+        self.run_name = "1_other_seen"
 
         # World
         # The number of observed agents does not include itself or the predator
-        self.nr_observed_agents = 5
-        self.nr_of_boids = 10  # on top of The One
+        self.nr_observed_agents = 4
+        self.nr_of_boids = 4  # on top of The One
         self.predator_present = True
         self.grouped_spawn = False
-        self.predator_halting = True
+        self.predator_halting = False
 
         # Collect data for analysis
         self.record_keeping = True
         # Gather data every gather_frequency ticks
-        self.record_frequency = 100
+        self.record_frequency = 1000
 
         # Boid
         self.boid_speed = 0.0333  # from OG, 1/60th of space per step
@@ -50,6 +50,8 @@ class Config:
 
     def change_to_configuration(self, configuration):
         if configuration == 1:
-            pass
+            self.run_name = "2_others_seen"
+            self.nr_observed_agents = 2
         elif configuration == 2:
-            pass
+            self.run_name = "4_others_seen"
+            self.nr_observed_agents = 4

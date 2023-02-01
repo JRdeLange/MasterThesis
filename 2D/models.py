@@ -1,9 +1,8 @@
 import pyglet
 
+# 3D models for the visualisation
 
 class Models:
-    # boid_model = pyglet.graphics.vertex_list(6, ('v3f', (0, 1, 0, -0.7, -1, 0, 0, -0.7, 0,
-    #                                                     0, 1, 0, 0, -0.7, 0, 0.7, -1, 0,)))
 
     boid_indices = [0, 9, 1, 1, 9, 2, 2, 9, 3, 3,
                     9, 4, 4, 9, 5, 5, 9, 6, 6, 9,

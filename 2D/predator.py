@@ -133,8 +133,3 @@ class Predator:
                 self.pos[i] = val - 2
             elif val < - 1:
                 self.pos[i] = val + 2
-
-
-
-
-

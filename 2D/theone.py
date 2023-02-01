@@ -12,7 +12,3 @@ class TheOne(Boid):
         self.pos += self.forward * self.config.boid_speed
         self.wrap()
         #self.history.add(self.pos)
-
-
-
-

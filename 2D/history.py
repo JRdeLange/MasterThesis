@@ -1,6 +1,7 @@
 import queue
 from copy import deepcopy
 
+# Keeps track of the last 3 positions of an agent in case history observation mode is used
 
 class History:
 

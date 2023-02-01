@@ -11,6 +11,7 @@ from theone import TheOne
 import pyglet
 from renderer import Renderer
 from record import Slice, Record
+import os
 
 
 class Environment(gym.Env):
@@ -21,15 +22,10 @@ class Environment(gym.Env):
         self.current_boid_index = None
         self.world = world
         self.dqn_agent = None
-        self.print_info = False
         if self.config.record_keeping:
             self.record = Record()
             self.world.record = self.record
 
-        # [axis x, axis y, axis z, angle]
-        # new forward direction [x, y, z]
-        # self.action_space = spaces.Box(np.array([np.float32(-1), np.float32(-1), np.float32(-1)]),
-        #                               np.array([np.float32(1), np.float32(1), np.float32(1)]))
         self.action_space = spaces.Discrete(5)
         self.action_dict = {
             0: -1,
@@ -39,25 +35,13 @@ class Environment(gym.Env):
             4: 1
         }
 
-        # [[self]
-        #  [predator],
-        #  [boid],
-        #  [boid]....
-        #
-        # speed as well? No, put speed in forward vector
-        # [distance,   vector,   forward]
-        # [f,          f, f, f,  f, f, f]
-        # [pos -2, pos -1, pos now]
-        # [f, f,   f, f,   f, f]
-
-        # Using the following just like OG
+        # Each row in the observations:
         # [distance, direction, orientation]
         # [f,        f,         f]
         self.nr_of_obs_rows = self.config.nr_observed_agents + 1
         if self.config.predator_present:
             self.nr_of_obs_rows += 1
-        self.observation_space = spaces.Box(low=-1, high=1,
-                                            shape=(self.nr_of_obs_rows, 3))
+        self.observation_space = spaces.Box(low=-1, high=1, shape=(self.nr_of_obs_rows, 3))
 
     def set_dqn_agent(self, dqn_agent):
         self.dqn_agent = dqn_agent
@@ -74,17 +58,21 @@ class Environment(gym.Env):
         agent.turn_by_rad(change)
 
     def step(self, action):
+        # Perform boid actions
         the_one: TheOne = self.world.the_one
         self.perform_agent_action(the_one, action)
         self.perform_passives_actions()
+
+        # Advance world
         self.world.tick()
+
+        # Gather info for next iteration
         state = self.construct_observation(the_one)
         reward = self.get_reward()
         done = not self.world.the_one.alive
         info = {}
-        if self.print_info:
-            print(action, the_one.forward, reward)
 
+        # Keep records for statistical analysis
         if (self.world.overarching_tick % self.config.record_frequency == 0) and self.config.record_keeping:
             self.keep_record()
 
@@ -93,8 +81,8 @@ class Environment(gym.Env):
     def keep_record(self):
         self.record.add_slice(self.world)
 
-    def save_record(self, name):
-        self.record.save_to_file(name, self.config)
+    def save_record(self, folder, name):
+        self.record.save_to_file(folder, name, self.config)
 
     def get_reward(self):
         if self.world.the_one.alive:

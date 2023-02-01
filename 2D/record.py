@@ -1,3 +1,5 @@
+import os
+
 class Record:
 
     def __init__(self):
@@ -11,8 +13,10 @@ class Record:
     def boid_eaten(self):
         self.slices[-1].boid_eaten()
 
-    def save_to_file(self, name, config):
-        with open(str(name)+".txt", "w") as f:
+    def save_to_file(self, folder, name, config):
+        if not os.path.exists("data/" + folder):
+            os.mkdir("data/" + folder)
+        with open("data/" + folder + "/" + str(name)+".txt", "w") as f:
 
             # Header with nr of slices, config and data layout
             f.write(str(len(self.slices)) + '\n')

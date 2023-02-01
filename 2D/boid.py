@@ -1,8 +1,5 @@
-import numpy as np
 import math
-from scipy.spatial.transform import Rotation as R
 import random
-from config import Config
 from utils import Utils as U
 from history import History
 
@@ -20,7 +17,6 @@ class Boid:
         self.id = None
         self.history = History()
         self.history.fill(self.pos)
-
 
     def set_id(self, id):
         self.id = id
@@ -40,10 +36,6 @@ class Boid:
     def turn_by_rad(self, turn):
         self.rotation = U.wrap_radians(self.rotation + turn)
         self.forward = U.rot_to_vec(self.rotation)
-
-    def turn_by_quaternion(self, quaternion):
-        change = R.from_quat(quaternion)
-        self.forward = U.normalize_nparray(change.apply(self.forward))
 
     def respawn(self):
         self.pos = U.random_np_array(2, -1, 1)

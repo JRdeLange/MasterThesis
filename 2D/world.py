@@ -4,12 +4,9 @@ from utils import Utils as U
 from agentinfo import AgentInfo
 from theone import TheOne
 
-from record import Record, Slice
-
 '''
 World goes from -1,-1,-1 to 1,1,1
 '''
-
 
 class World:
 

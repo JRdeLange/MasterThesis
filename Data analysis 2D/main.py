@@ -1,8 +1,12 @@
-from sklearn.cluster import _dbscan
 from reader import Reader
 from record import Record
+import random
 import analysis
+import clusterer
 import math
+from sklearn.cluster import DBSCAN
+import numpy as np
+
 
 def main():
     # Read in file
@@ -15,4 +19,13 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    data = []
+    for x in range(1000):
+        data.append([random.random()*30, random.random()*30])
+
+    clustering = clusterer.cluster(data, 1, 1)
+    clusters = clusterer.clustering_to_list_of_lists(clustering, data)
+    print(clusters)
+    clusterer.plot_points(clusters)
+
+    #main()

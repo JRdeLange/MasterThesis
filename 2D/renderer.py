@@ -2,20 +2,13 @@ import pyglet
 from pyglet.gl import *
 import pyshaders as ps
 
-import config
 from shaders import Shaders
 from utils import Utils
 from models import Models
-from boid import Boid
 import math
 from scipy.spatial.transform import Rotation as R
 
-
-
-# Nice rendering example
-# https://github.com/pyglet/pyglet/blob/master/examples/3dmodel/model.py
 half_pi = 0.5 * math.pi
-
 
 class Renderer:
 
@@ -26,7 +19,6 @@ class Renderer:
         self.init_shaders()
         self.boid_model = Models.boid_model
         self.wireframe_world_model = Models.wireframe_world_cube
-
 
         @self.window.event
         def on_draw():

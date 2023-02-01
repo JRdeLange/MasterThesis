@@ -5,7 +5,7 @@ class Config:
 
     def __init__(self, configuration=0):
         # "Standard" configuration:
-        self.run_name = "1_other_seen"
+        self.run_name = "test"
 
         # World
         # The number of observed agents does not include itself or the predator

@@ -1,4 +1,4 @@
-## Predated learning boids
+## Do agents learn to flock under predatory pressure?
 
 A series of 2D and 3D models where boid-like agents try to survive a predator hunting them down. The objective of the thesis this code is written for is to determine whether predatory pressure can induce flocking behaviour in 2D as well as in 3D.
 

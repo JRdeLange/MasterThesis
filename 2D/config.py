@@ -7,10 +7,15 @@ class Config:
         # "Standard" configuration:
         self.run_name = "test"
 
+        # Training:
+        self.linear_annealing = True
+        self.linear_annealing_from = 0.1
+        self.linear_annealing_to = 0.001
+
         # World
         # The number of observed agents does not include itself or the predator
-        self.nr_observed_agents = 4
-        self.nr_of_boids = 4  # on top of The One
+        self.nr_observed_agents = 5
+        self.nr_of_boids = 8      # on top of The One
         self.predator_present = True
         self.grouped_spawn = False
         self.predator_halting = False
@@ -50,8 +55,5 @@ class Config:
 
     def change_to_configuration(self, configuration):
         if configuration == 1:
-            self.run_name = "2_others_seen"
-            self.nr_observed_agents = 2
-        elif configuration == 2:
-            self.run_name = "4_others_seen"
-            self.nr_observed_agents = 4
+            self.run_name = "12_other_boids"
+            self.nr_of_boids = 12

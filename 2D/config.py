@@ -7,6 +7,11 @@ class Config:
         # "Standard" configuration:
         self.run_name = "test"
 
+        # Training
+        self.annealing = True
+        self.annealing_start = 0.2
+        self.annealing_end = 0.002
+
         # World
         # The number of observed agents does not include itself or the predator
         self.nr_observed_agents = 4

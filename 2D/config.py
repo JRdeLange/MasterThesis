@@ -7,10 +7,11 @@ class Config:
         # "Standard" configuration:
         self.run_name = "test"
 
-        # Training:
-        self.linear_annealing = True
-        self.linear_annealing_from = 0.1
-        self.linear_annealing_to = 0.001
+
+        self.annealing = True
+        self.annealing_start = 0.2
+        self.annealing_end = 0.002
+
 
         # World
         # The number of observed agents does not include itself or the predator

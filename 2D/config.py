@@ -5,28 +5,30 @@ class Config:
 
     def __init__(self, configuration=0):
         # "Standard" configuration:
-        self.run_name = "test"
-
+        self.run_name = "exp_2D_rec_random_movement_10_boids"
 
         self.annealing = True
         self.annealing_start = 0.2
         self.annealing_end = 0.002
 
-
         # World
         # The number of observed agents does not include itself or the predator
-        self.nr_observed_agents = 5
-        self.nr_of_boids = 8      # on top of The One
-        self.predator_present = True
+        self.nr_observed_agents = 0
+        self.nr_of_boids = 9      # on top of The One
+        self.predator_present = False
         self.grouped_spawn = False
         self.predator_halting = False
 
         # Collect data for analysis
         self.record_keeping = True
         # Gather data every gather_frequency ticks
-        self.record_frequency = 1000
+        # for exp gather every 100
+        self.record_frequency = 100
 
         # Boid
+        # faster is 0.0383
+        # OG is 0.0333
+        # slower is 0.0283
         self.boid_speed = 0.0333  # from OG, 1/60th of space per step
         self.boid_color = (0.8, 0.8, 0.8, 1)
         self.boid_turning_speed = 0.5 * math.pi  # From OG, 90 degrees
@@ -56,5 +58,39 @@ class Config:
 
     def change_to_configuration(self, configuration):
         if configuration == 1:
-            self.run_name = "12_other_boids"
-            self.nr_of_boids = 12
+            self.run_name = "exp_2D_rec_random_movement_15_boids"
+            self.nr_of_boids = 14
+        if configuration == 2:
+            self.run_name = "exp_2D_rec_random_movement_20_boids"
+            self.nr_of_boids = 19
+        if configuration == 3:
+            self.run_name = "exp_trained_alone_10_boids"
+            self.nr_of_boids = 9
+            self.predator_present = True
+        if configuration == 4:
+            self.run_name = "exp_trained_alone_15_boids"
+            self.nr_of_boids = 14
+            self.predator_present = True
+        if configuration == 5:
+            self.run_name = "exp_trained_alone_20_boids"
+            self.nr_of_boids = 19
+            self.predator_present = True
+
+        '''
+        if configuration == 1:
+            self.run_name = "2D_rec_control_15_total_boids"
+            self.nr_of_boids = 14
+        if configuration == 2:
+            self.run_name = "2D_rec_control_20_total_boids"
+            self.nr_of_boids = 19
+        if configuration == 3:
+            self.run_name = "2D_rec_10_total_boids"
+            self.nr_of_boids = 9
+            self.nr_observed_agents = 0
+            self.predator_present = True
+        if configuration == 4:
+            self.run_name = "2D_rec_10_total_boids_slower"
+            self.nr_of_boids = 9
+            self.boid_speed = 0.0283
+            self.predator_present = True
+        '''

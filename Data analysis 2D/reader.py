@@ -1,53 +1,51 @@
 from record import Record
 from agentdata import AgentData
 
-class Reader:
+def construct_records(filename):
+    record = Record()
 
-    def __init__(self):
-        pass
-
-    def construct_records(self, filename):
-        record = Record()
-        nr_of_slices = None
-
-        tick = None
-        boids_eaten = None
-        predator = []
-        boids = []
-
-        with open(filename, "r") as file:
-            # Get nr of slices
-            nr_of_slices = int(file.readline())
-            # Get rid of rest of header
+    with open(filename, "r") as file:
+        # Get nr of slices
+        nr_of_slices = int(file.readline())
+        # Get rid of rest of header
+        line = file.readline()
+        while line[1] != '-':
             line = file.readline()
-            while line[1] != '-':
-                line = file.readline()
 
-            for i in range(nr_of_slices):
-                self.read_slice(file, record)
+        for i in range(nr_of_slices):
+            read_slice(file, record)
+            if i%1000 == 0:
                 print("Read slice " + str(i) + " out of " + str(nr_of_slices))
 
-        return record
+    print("Finished reading")
+    return record
 
-    def read_slice(self, file, record):
-        tick = int(file.readline())
-        boids_eaten = int(file.readline())
+def read_slice(file, record):
+    tick = int(file.readline())
+    boids_eaten = int(file.readline())
 
-        pos = self.parse_tuple(file.readline())
-        rot = float(file.readline())
+    pos = file.readline()
+    rot = file.readline()
+    # Check for None (no predator)
+    print(pos[0])
+    if pos[0] == "N":
+        predator = AgentData(None, None)
+    else:
+        pos = parse_tuple(pos)
+        rot = float(rot)
         predator = AgentData(pos, rot)
 
-        boids = []
+    boids = []
+    line = file.readline()
+
+    while line[1] != '-':
+        pos = parse_tuple(line)
+        rot = float(file.readline())
+        boids.append(AgentData(pos, rot))
         line = file.readline()
 
-        while line[1] != '-':
-            pos = self.parse_tuple(line)
-            rot = float(file.readline())
-            boids.append(AgentData(pos, rot))
-            line = file.readline()
+    record.add_slice(tick, boids_eaten, predator, boids)
 
-        record.add_slice(tick, boids_eaten, predator, boids)
-
-    def parse_tuple(self, line):
-        line = line.split(' ')
-        return [float(number) for number in line]
+def parse_tuple(line):
+    line = line.split(' ')
+    return [float(number) for number in line]

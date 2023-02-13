@@ -7,7 +7,7 @@ class Record:
 
     def add_slice(self, world):
         # If the latest episode has an episode_length set, it is finished, so we need a new one
-        episode_slice = Slice(world.overarching_tick, world.predator, world.boids)
+        episode_slice = Slice(world.overarching_tick, world.predator, world.boids, world.config)
         self.slices.append(episode_slice)
 
     def boid_eaten(self):
@@ -37,11 +37,14 @@ class Record:
 
 class Slice:
 
-    def __init__(self, tick, predator, boids):
+    def __init__(self, tick, predator, boids, config):
         self.tick = tick
         self.boids_eaten = 0
-        self.predator_pos = predator.pos
-        self.predator_rotation = predator.rotation
+        self.predator_pos = [None, None]
+        self.predator_rotation = None
+        if config.predator_present:
+            self.predator_pos = predator.pos
+            self.predator_rotation = predator.rotation
         self.agents_pos = []
         self.agents_rotation = []
         for boid in boids:

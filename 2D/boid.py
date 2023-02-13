@@ -17,6 +17,7 @@ class Boid:
         self.id = None
         self.history = History()
         self.history.fill(self.pos)
+        self.times_moved = 0
 
     def set_id(self, id):
         self.id = id

@@ -50,10 +50,13 @@ def prepare_run(world, renderer, config):
     print(model.summary())
     memory = SequentialMemory(limit=50000, window_length=1)
     policy = BoltzmannQPolicy()
+    test_policy = BoltzmannQPolicy()
     if config.annealing:
-        policy = LinearAnnealedPolicy(EpsGreedyQPolicy, "eps", 0, 0, 0, 0)
+        policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr="eps", value_min=0, value_max=0, value_test=0, nb_steps=0)
+        test_policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr="eps", value_min=0, value_max=0, value_test=1, nb_steps=0)
+
     dqn = DQNAgent(model=model, nb_actions=n_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2,
-                   policy=policy, environment=environment)
+                   policy=policy, test_policy=test_policy)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
     environment.set_dqn_agent(dqn)
     return environment, model, dqn
@@ -63,8 +66,8 @@ def annealing(dqn, config, i, times, steps):
     interval = eps_range/times
     start = config.annealing_start - interval * i
     end = config.annealing_start - interval * (i + 1)
-    #dqn.policy = LinearAnnealedPolicy(EpsGreedyQPolicy, "eps",
-    #                                  start, end, 0, steps)
+    dqn.policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), "eps",
+                                      start, end, 0, steps)
     print(start, end)
 
 def run(dqn, environment, steps, times, name, config):
@@ -84,33 +87,89 @@ def save(dqn, folder, name):
 def load(dqn, folder, name):
     dqn.load_weights("data/" + str(folder) + "/" + str(name))
 
+def experiment(dqn, environment, episodes, config):
+    dqn.policy = EpsGreedyQPolicy(eps=config.annealing_end)
+    dqn.test(environment, nb_episodes=episodes, visualize=False, nb_max_episode_steps=10000)
+    name = "exp_" + config.run_name
+    save(dqn, config.run_name, config.run_name + ".h5f")
+    environment.save_record(name, name)
+
 def main():
+
     config = Config(0)
 
-    annealing(None, config, 0, 5, 50)
-    annealing(None, config, 1, 5, 50)
-    annealing(None, config, 2, 5, 50)
-    annealing(None, config, 3, 5, 50)
-    annealing(None, config, 4, 5, 50)
-    print(vars(config))
-
     world = World(config)
-
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
+    experiment(dqn, environment, 10, config)
 
-    dqn.policy.eps = 0.2
-    print(dqn.policy.get_config())
+    config.change_to_configuration(1)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    experiment(dqn, environment, 10, config)
 
-    #run(dqn, environment, 100000, 10, config.run_name)
+    config.change_to_configuration(2)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    experiment(dqn, environment, 10, config)
 
-    input("waiter")
+    config.change_to_configuration(3)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    dqn.test_policy = EpsGreedyQPolicy(0)
+    dqn.load_weights("data/only_the_one/only_the_one1500000.h5f")
+    experiment(dqn, environment, 10000, config)
+
+    config.change_to_configuration(4)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    dqn.test_policy = EpsGreedyQPolicy(0)
+    dqn.load_weights("data/only_the_one/only_the_one1500000.h5f")
+    experiment(dqn, environment, 10000, config)
+
+    config.change_to_configuration(5)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    dqn.test_policy = EpsGreedyQPolicy(0)
+    dqn.load_weights("data/only_the_one/only_the_one1500000.h5f")
+    experiment(dqn, environment, 10000, config)
+
+    '''
+    config.change_to_configuration(3)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    run(dqn, environment, 100000, 5, config.run_name, config)
+    
+    
+    
+    config.change_to_configuration(3)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    dqn.load_weights("data/only_the_one/only_the_one1500000.h5f")
+    #load(dqn, "2D_rec_10_total_boids", "2D_rec_10_total_boids500000.h5f")
+    #run(dqn, environment, 100000, 5, config.run_name, config)
+
+    #input("waiter")
 
     dqn.test(environment, nb_episodes=10, visualize=True, nb_max_episode_steps=2000)
+    '''
 
 
 if __name__ == '__main__':
     main()
-
 

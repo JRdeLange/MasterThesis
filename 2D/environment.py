@@ -43,6 +43,8 @@ class Environment(gym.Env):
             self.nr_of_obs_rows += 1
         self.observation_space = spaces.Box(low=-1, high=1, shape=(self.nr_of_obs_rows, 3))
 
+        self.stop_exp_at_tick = 100000
+
     def set_dqn_agent(self, dqn_agent):
         self.dqn_agent = dqn_agent
 
@@ -75,6 +77,13 @@ class Environment(gym.Env):
         # Keep records for statistical analysis
         if (self.world.overarching_tick % self.config.record_frequency == 0) and self.config.record_keeping:
             self.keep_record()
+
+        if not self.dqn_agent.training:
+            if self.world.overarching_tick == self.stop_exp_at_tick:
+                self.save_record(self.config.run_name, self.config.run_name + "100000_ticks")
+
+            if self.world.overarching_tick > self.stop_exp_at_tick:
+                done = True
 
         return state, reward, done, info
 

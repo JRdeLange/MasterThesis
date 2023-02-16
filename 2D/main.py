@@ -95,21 +95,53 @@ def experiment(dqn, environment, episodes, config):
     environment.save_record(name, name)
 
 def main():
-
     config = Config(0)
 
+    config.change_to_configuration(2)
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
-    experiment(dqn, environment, 10, config)
+    run(dqn, environment, 100000, 5, config.run_name, config)
 
-    config.change_to_configuration(1)
+    config.change_to_configuration(3)
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
-    experiment(dqn, environment, 10, config)
+    run(dqn, environment, 100000, 5, config.run_name, config)
+
+    config.change_to_configuration(4)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    run(dqn, environment, 100000, 5, config.run_name, config)
+
+    config.change_to_configuration(5)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    run(dqn, environment, 100000, 5, config.run_name, config)
+
+    config.change_to_configuration(6)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    run(dqn, environment, 100000, 5, config.run_name, config)
+
+    config.change_to_configuration(7)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    run(dqn, environment, 100000, 5, config.run_name, config)
+
+
+    '''
+
 
     config.change_to_configuration(2)
     world = World(config)
@@ -145,7 +177,7 @@ def main():
     dqn.load_weights("data/only_the_one/only_the_one1500000.h5f")
     experiment(dqn, environment, 10000, config)
 
-    '''
+    
     config.change_to_configuration(3)
     world = World(config)
     world.spawn_things()
@@ -155,12 +187,12 @@ def main():
     
     
     
-    config.change_to_configuration(3)
+    config.change_to_configuration(2)
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
-    dqn.load_weights("data/only_the_one/only_the_one1500000.h5f")
+    dqn.load_weights("data/2D_rec_10_total_boids_short_chase/2D_rec_10_total_boids_short_chase100000.h5f")
     #load(dqn, "2D_rec_10_total_boids", "2D_rec_10_total_boids500000.h5f")
     #run(dqn, environment, 100000, 5, config.run_name, config)
 
@@ -168,6 +200,7 @@ def main():
 
     dqn.test(environment, nb_episodes=10, visualize=True, nb_max_episode_steps=2000)
     '''
+
 
 
 if __name__ == '__main__':

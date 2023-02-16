@@ -1,0 +1,2 @@
+model_checkpoint_path: "exp_trained_alone_15_boids.h5f"
+all_model_checkpoint_paths: "exp_trained_alone_15_boids.h5f"

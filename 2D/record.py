@@ -1,4 +1,6 @@
 import os
+from copy import deepcopy
+
 
 class Record:
 
@@ -48,7 +50,7 @@ class Slice:
         self.agents_pos = []
         self.agents_rotation = []
         for boid in boids:
-            self.agents_pos.append(boid.pos)
+            self.agents_pos.append(deepcopy(boid.pos))
             self.agents_rotation.append(boid.rotation)
 
 

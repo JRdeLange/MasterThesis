@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0fa9c23b-078f-421a-873b-de5a57f0e489" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../2D/.idea/3D rewrite.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../2D/.idea/3D rewrite.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2D/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../2D/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2D/boid.py" beforeDir="false" afterPath="$PROJECT_DIR$/../2D/boid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

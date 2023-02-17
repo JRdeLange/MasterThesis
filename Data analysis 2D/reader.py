@@ -27,7 +27,6 @@ def read_slice(file, record):
     pos = file.readline()
     rot = file.readline()
     # Check for None (no predator)
-    print(pos[0])
     if pos[0] == "N":
         predator = AgentData(None, None)
     else:

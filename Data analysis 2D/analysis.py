@@ -5,6 +5,9 @@ import reader
 from record import Record
 import os
 import json
+import scipy.stats as stats
+import pingouin
+import numpy as np
 
 def construct_experiment_analysis_file(name):
     record = reader.construct_records(name)
@@ -50,14 +53,24 @@ def construct_experiment_analysis_file(name):
 
     print(total_nr_of_clusters)
 
+    # Things to calculate after the fact
+
+    # Standard deviations
+    cluster_size_std_dev = stats.tstd(all_cluster_sizes)
+    pos_deviation_std_dev = stats.tstd(all_pos_deviations)
+    rot_deviation_std_dev = stats.tstd(all_rot_deviations)
+
     json_dict = {
         "sum_size_of_clusters": sum_size_of_clusters,
         "all_cluster_sizes": all_cluster_sizes,
+        "cluster_size_std_dev": cluster_size_std_dev,
         "total_nr_of_clusters": total_nr_of_clusters,
         "sum_pos_deviation": sum_pos_deviation,
         "all_pos_deviations": all_pos_deviations,
+        "pos_deviation_std_dev": pos_deviation_std_dev,
         "sum_rot_deviation": sum_rot_deviation,
         "all_rot_deviations": all_rot_deviations,
+        "rot_deviation_std_dev": rot_deviation_std_dev,
         "sum_boids_eaten": sum_boids_eaten
     }
 
@@ -68,6 +81,18 @@ def construct_experiment_analysis_file(name):
         json.dump(json_dict, f)
 
     return record
+
+
+def compare_jsons(a, b):
+    a = json.load("exps/" + a)
+    b = json.load("exps/" + b)
+    data_a = [a["all_cluster_sizes"], a["all_pos_deviations"], a["all_rot_deviations"]]
+    data_b = [b["all_cluster_sizes"], b["all_pos_deviations"], b["all_rot_deviations"]]
+    # Transpose lists
+    data_a = [list(x) for x in zip(*data_a)]
+    data_b = [list(x) for x in zip(*data_b)]
+    result = pingouin.multivariate_ttest(data_a, data_b)
+
 
 def plot_eaten_boids(record, bin_size=5000):
     x = []

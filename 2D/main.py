@@ -20,6 +20,7 @@ def make_policy(config):
     if config.linear_annealing:
         policy = None
 
+
 def prepare_run(world, renderer, config):
     environment = Environment(world, renderer, config)
     n_actions = environment.action_space.n

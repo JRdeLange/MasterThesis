@@ -137,6 +137,9 @@ class Utils:
         for element in arr:
             scalar += element * element
         scalar = math.sqrt(scalar)
+        if scalar == 0:
+            print("Changed a vector by +[0.01, 0.01, 0.01] to prevent division my zero in normalization")
+            return Utils.normalize_nparray(arr + 0.01)
         return arr / scalar
 
     @staticmethod

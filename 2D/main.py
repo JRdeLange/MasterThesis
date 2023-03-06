@@ -13,6 +13,7 @@ from rl.memory import SequentialMemory
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.policy import EpsGreedyQPolicy
+from rl.policy import GreedyQPolicy
 from rl.policy import LinearAnnealedPolicy
 
 
@@ -21,7 +22,7 @@ def make_policy(config):
         policy = None
 
 
-def prepare_run(world, renderer, config):
+def prepare_run(world, renderer, config, size="small"):
     environment = Environment(world, renderer, config)
     n_actions = environment.action_space.n
     model = Sequential()
@@ -36,16 +37,17 @@ def prepare_run(world, renderer, config):
     model.add(Activation('relu'))
     model.add(Dense(16))
     model.add(Activation('relu'))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
+    if size == "big":
+        model.add(Dense(16))
+        model.add(Activation('relu'))
+        model.add(Dense(16))
+        model.add(Activation('relu'))
+        model.add(Dense(16))
+        model.add(Activation('relu'))
+        model.add(Dense(16))
+        model.add(Activation('relu'))
+        model.add(Dense(16))
+        model.add(Activation('relu'))
     model.add(Dense(n_actions))
     model.add(Activation('linear'))
     print(model.summary())
@@ -54,7 +56,7 @@ def prepare_run(world, renderer, config):
     test_policy = BoltzmannQPolicy()
     if config.annealing:
         policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr="eps", value_min=0, value_max=0, value_test=0, nb_steps=0)
-        test_policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr="eps", value_min=0, value_max=0, value_test=1, nb_steps=0)
+        test_policy = GreedyQPolicy()
 
     dqn = DQNAgent(model=model, nb_actions=n_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2,
                    policy=policy, test_policy=test_policy)
@@ -72,6 +74,7 @@ def annealing(dqn, config, i, times, steps):
     print(start, end)
 
 def run(dqn, environment, steps, times, name, config):
+    config.record_frequency = 1000
     for i in range(times):
         # Do annealing
         if config.annealing:
@@ -86,60 +89,130 @@ def save(dqn, folder, name):
     dqn.save_weights("data/" + folder + "/" + name, overwrite=True)
 
 def load(dqn, folder, name):
+    print("data/" + str(folder) + "/" + str(name))
     dqn.load_weights("data/" + str(folder) + "/" + str(name))
 
 def experiment(dqn, environment, episodes, config):
-    dqn.policy = EpsGreedyQPolicy(eps=config.annealing_end)
+    config.record_frequency = 100
     dqn.test(environment, nb_episodes=episodes, visualize=False, nb_max_episode_steps=10000)
-    name = "exp_" + config.run_name
-    save(dqn, config.run_name, config.run_name + ".h5f")
-    environment.save_record(name, name)
+    environment.save_record("__exp " + config.exp_folder_name, config.run_name)
 
 def main():
     config = Config(0)
-
-    config.change_to_configuration(2)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 100000, 5, config.run_name, config)
-
-    config.change_to_configuration(3)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 100000, 5, config.run_name, config)
-
-    config.change_to_configuration(4)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 100000, 5, config.run_name, config)
+    config.exp_folder_name = "small network 2 observed"
 
     config.change_to_configuration(5)
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 100000, 5, config.run_name, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
 
     config.change_to_configuration(6)
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 100000, 5, config.run_name, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
 
     config.change_to_configuration(7)
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 100000, 5, config.run_name, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
 
+    config.change_to_configuration(8)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    names = [["small network 5 observed", "small"], ["big network 5 observed", "big"]]
+    config.nr_observed_agents = 5
+
+    for name in names:
+        for x in range(1, 9):
+            config.exp_folder_name = name[0]
+            config.change_to_configuration(x)
+            world = World(config)
+            world.spawn_things()
+            renderer = Renderer(800, 800, world)
+            environment, model, dqn = prepare_run(world, renderer, config, size=name[1])
+            load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+            experiment(dqn, environment, 1500, config)
+
+
+    '''
+    config.change_to_configuration(1)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    config.change_to_configuration(2)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    config.change_to_configuration(3)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    config.change_to_configuration(4)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    config.change_to_configuration(5)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    config.change_to_configuration(6)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    config.change_to_configuration(7)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+
+    config.change_to_configuration(8)
+    world = World(config)
+    world.spawn_things()
+    renderer = Renderer(800, 800, world)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+    experiment(dqn, environment, 1500, config)
+    '''
 
     '''
 

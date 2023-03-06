@@ -3,7 +3,7 @@ from sklearn.cluster import DBSCAN
 import numpy as np
 import utils
 
-eps = 0.2
+eps = 0.4
 min_samples = 3
 metric = utils.wrapping_distance_boids
 

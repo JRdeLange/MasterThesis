@@ -13,7 +13,7 @@ class Config:
 
         # World
         # The number of observed agents does not include itself or the predator
-        self.nr_observed_agents = 5
+        self.nr_observed_agents = 2
         self.nr_of_boids = 19      # on top of The One
         self.predator_present = True
         self.grouped_spawn = False
@@ -25,6 +25,7 @@ class Config:
         # for exp gather every 100
         # for training gather every 1000
         self.record_frequency = 1000
+        self.exp_folder_name = None
 
         # Boid
         # faster is 0.0383
@@ -58,32 +59,42 @@ class Config:
         self.change_to_configuration(configuration)
 
     def change_to_configuration(self, configuration):
+        if configuration == 1:
+            self.run_name = "2D_rec_10_total_boids"
+            self.boid_speed = 0.0333
+            self.nr_of_boids = 9
+            self.predator_chase_time = 20
         if configuration == 2:
             self.run_name = "2D_rec_10_total_boids_short_chase"
             self.boid_speed = 0.0333
             self.nr_of_boids = 9
             self.predator_chase_time = 10
         if configuration == 3:
+            self.run_name = "2D_rec_10_total_boids_slower"
+            self.boid_speed = 0.0333
+            self.nr_of_boids = 9
+            self.predator_chase_time = 20
+        if configuration == 4:
             self.run_name = "2D_rec_10_total_boids_slower_short_chase"
             self.boid_speed = 0.0283
             self.nr_of_boids = 9
             self.predator_chase_time = 10
-        if configuration == 4:
+        if configuration == 5:
             self.run_name = "2D_rec_20_total_boids"
             self.boid_speed = 0.0333
             self.nr_of_boids = 19
             self.predator_chase_time = 20
-        if configuration == 5:
+        if configuration == 6:
             self.run_name = "2D_rec_20_total_boids_short_chase"
             self.boid_speed = 0.0333
             self.nr_of_boids = 19
             self.predator_chase_time = 10
-        if configuration == 6:
+        if configuration == 7:
             self.run_name = "2D_rec_20_total_boids_slower"
             self.boid_speed = 0.0283
             self.nr_of_boids = 19
             self.predator_chase_time = 20
-        if configuration == 7:
+        if configuration == 8:
             self.run_name = "2D_rec_20_total_boids_slower_short_chase"
             self.boid_speed = 0.0283
             self.nr_of_boids = 19

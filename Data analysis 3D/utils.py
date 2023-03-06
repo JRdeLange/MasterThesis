@@ -9,6 +9,14 @@ colors = ['#000000', '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
 
 two_pi = 2 * math.pi
 
+def unit_vector(vector):
+    return vector / np.linalg.norm(vector)
+
+def angle_between(v1, v2):
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
 def rad_to_cartesian(rot):
     x = math.cos(rot)
     y = math.sin(rot)
@@ -48,6 +56,9 @@ def wrapping_distance_radians(origin, to):
 def vec2_magnitude(vec):
     return np.sqrt(vec[0]*vec[0] + vec[1]*vec[1])
 
+def vec3_magnitude(vec):
+    return np.sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2])
+
 def avg_of_dir_vectors(vectors):
     total = [0, 0, 0]
     for vector in vectors:
@@ -69,7 +80,7 @@ def wrapping_distance_boids(origin, to):
     vec[0] = best_option(origin[0], x_options)
     vec[1] = best_option(origin[1], y_options)
     vec[2] = best_option(origin[2], z_options)
-    return vec
+    return vec3_magnitude(vec)
 
 def best_option(origin, options):
     lowest = 10

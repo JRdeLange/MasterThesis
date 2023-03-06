@@ -76,7 +76,11 @@ class Environment(gym.Env):
 
         # Keep records for statistical analysis
         if (self.world.overarching_tick % self.config.record_frequency == 0) and self.config.record_keeping:
-            self.keep_record()
+            # If we are testing and have reached the stop experiment limit do not record anymore
+            if not (not self.dqn_agent.training and self.world.overarching_tick > self.stop_exp_at_tick):
+                self.keep_record()
+            else:
+                print(self.world.overarching_tick)
 
         if not self.dqn_agent.training:
             if self.world.overarching_tick == self.stop_exp_at_tick:

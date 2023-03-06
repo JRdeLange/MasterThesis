@@ -5,7 +5,7 @@ class Config:
 
     def __init__(self, configuration=0):
         # "Standard" configuration:
-        self.run_name = "2D_test"
+        self.run_name = "test"
 
         self.annealing = True
         self.annealing_start = 0.2
@@ -14,7 +14,7 @@ class Config:
         # World
         # The number of observed agents does not include itself or the predator
         self.nr_observed_agents = 5
-        self.nr_of_boids = 19      # on top of The One
+        self.nr_of_boids = 39      # on top of The One
         self.predator_present = True
         self.grouped_spawn = False
         self.predator_halting = False

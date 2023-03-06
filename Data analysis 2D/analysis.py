@@ -82,6 +82,9 @@ def construct_experiment_analysis_file(name):
 
     return record
 
+def mass_ingest_experiment(folder):
+    for filename in os.listdir(folder):
+        construct_experiment_analysis_file(os.path.join(folder, filename))
 
 def compare_jsons(a, b):
     a = json.load("exps/" + a)
@@ -92,6 +95,17 @@ def compare_jsons(a, b):
     data_a = [list(x) for x in zip(*data_a)]
     data_b = [list(x) for x in zip(*data_b)]
     result = pingouin.multivariate_ttest(data_a, data_b)
+    print(result)
+    return result
+
+def mass_compare(folder, baseline):
+    results = {}
+    for filename in os.listdir(folder):
+        file = os.path.join(folder, filename)
+        print(file)
+        results[filename] = compare_jsons(baseline, file)
+
+    print(results)
 
 
 def plot_eaten_boids(record, bin_size=5000):

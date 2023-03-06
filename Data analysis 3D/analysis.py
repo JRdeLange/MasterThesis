@@ -120,28 +120,20 @@ def average_pos_deviation(data):
     return total_distance / n
 
 def average_rot_deviation(data):
-    # Calc average rotation by calculating avg cartesian coordinate
-    n = len(data)
-    x_sum = 0
-    y_sum = 0
+    # Calc avg direction vector
+    sum_dir = [0, 0, 0]
     for boid in data:
-        cartesian = utils.rad_to_cartesian(boid)
-        x_sum += cartesian[0]
-        y_sum += cartesian[1]
+        sum_dir[0] += boid[0]
+        sum_dir[1] += boid[1]
+        sum_dir[2] += boid[2]
+    avg_dir = utils.normalize(sum_dir)
 
-    if x_sum == 0 and y_sum == 0:
-        print("Avg rotation is undefined")
-        return None
-
-    avg_cartesian = [x_sum / n, y_sum / n]
-    avg_cartesian = utils.normalize(avg_cartesian)
-    avg_rad = utils.cartesian_to_rad(avg_cartesian)
-
-    # Now calc avg deviation from avg rotation
-    total_distance = 0
+    # Calc deviation from avg vector
+    total_dev = 0
     for boid in data:
-        total_distance += abs(utils.wrapping_distance_radians(boid, avg_rad))
-    return total_distance / n
+        total_dev += utils.angle_between(avg_dir, boid)
+
+    return total_dev / len(data)
 
 def average_cluster_size(data):
     clusters = clusterer.clustering_to_list_of_lists(clusterer.cluster(data), data)

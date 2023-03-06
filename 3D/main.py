@@ -61,14 +61,13 @@ def annealing(dqn, config, i, times, steps):
     end = config.annealing_start - interval * (i + 1)
     dqn.policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), "eps",
                                       start, end, 0, steps)
-    print(start, end)
 
 def run(dqn, environment, steps, times, name, config):
     for i in range(times):
         # Do annealing
         if config.annealing:
             annealing(dqn, config, i, times, steps)
-        dqn.fit(environment, nb_steps=steps, visualize=False, verbose=2, nb_max_episode_steps=10000)
+        dqn.fit(environment, nb_steps=steps, visualize=True, verbose=2, nb_max_episode_steps=10000)
         save(dqn, name, name + str(steps * (i + 1)) + ".h5f")
         environment.save_record(name, name + str(i))
 
@@ -92,7 +91,9 @@ def main():
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
-    environment = Environment(world, renderer, config)
+    environment, model, dqn = prepare_run(world, renderer, config)
+    run(dqn, environment, 500, 5, "test", config)
+
 
 if __name__ == '__main__':
     main()

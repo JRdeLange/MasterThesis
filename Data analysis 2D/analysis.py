@@ -9,7 +9,7 @@ import scipy.stats as stats
 import pingouin
 import numpy as np
 
-def construct_experiment_analysis_file(name):
+def construct_experiment_analysis_file(name, output_folder, output_file_name):
     record = reader.construct_records(name)
 
     sum_size_of_clusters = 0
@@ -55,6 +55,11 @@ def construct_experiment_analysis_file(name):
 
     # Things to calculate after the fact
 
+    # avgs
+    avg_cluster_size = sum_size_of_clusters / total_nr_of_clusters
+    avg_pos_deviation = sum_pos_deviation / total_nr_of_clusters
+    avg_rot_deviation = sum_rot_deviation / total_nr_of_clusters
+
     # Standard deviations
     cluster_size_std_dev = stats.tstd(all_cluster_sizes)
     pos_deviation_std_dev = stats.tstd(all_pos_deviations)
@@ -64,27 +69,32 @@ def construct_experiment_analysis_file(name):
         "sum_size_of_clusters": sum_size_of_clusters,
         "all_cluster_sizes": all_cluster_sizes,
         "cluster_size_std_dev": cluster_size_std_dev,
+        "avg_cluster_size": avg_cluster_size,
         "total_nr_of_clusters": total_nr_of_clusters,
         "sum_pos_deviation": sum_pos_deviation,
         "all_pos_deviations": all_pos_deviations,
+        "avg_pos_deviation" : avg_pos_deviation,
         "pos_deviation_std_dev": pos_deviation_std_dev,
         "sum_rot_deviation": sum_rot_deviation,
         "all_rot_deviations": all_rot_deviations,
+        "avg_rot_deviation": avg_rot_deviation,
         "rot_deviation_std_dev": rot_deviation_std_dev,
         "sum_boids_eaten": sum_boids_eaten
     }
 
     # Write to file
-    if not os.path.exists("exps/" + name[:-4]):
-        os.mkdir("exps/" + name[:-4])
-    with open("exps/" + name[:-4] + "/exp_analysis_" + str(name), "w") as f:
+    if not os.path.exists(output_folder):
+        os.mkdir(output_folder)
+    with open(output_folder + "/" + output_file_name[:-4] + ".json", "w") as f:
         json.dump(json_dict, f)
 
     return record
 
-def mass_ingest_experiment(folder):
-    for filename in os.listdir(folder):
-        construct_experiment_analysis_file(os.path.join(folder, filename))
+def mass_ingest_experiment(input_folder, output_folder):
+    for filename in os.listdir(input_folder):
+        file = input_folder + "/" + filename
+        print(filename)
+        construct_experiment_analysis_file(file, output_folder, filename)
 
 def compare_jsons(a, b):
     a = json.load("exps/" + a)
@@ -97,6 +107,18 @@ def compare_jsons(a, b):
     result = pingouin.multivariate_ttest(data_a, data_b)
     print(result)
     return result
+
+
+def print_jsons(folder):
+    for filename in os.listdir(folder):
+        file = folder + "/" + filename
+        file = open(file)
+        data = json.load(file)
+        print("-----" + filename)
+        for thing in data:
+            print(thing, data[thing])
+        print("-----")
+
 
 def mass_compare(folder, baseline):
     results = {}

@@ -99,53 +99,16 @@ def experiment(dqn, environment, episodes, config):
 
 def main():
     config = Config(0)
-    config.exp_folder_name = "small network 2 observed"
 
-    config.change_to_configuration(5)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
-    experiment(dqn, environment, 1500, config)
-
-    config.change_to_configuration(6)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
-    experiment(dqn, environment, 1500, config)
-
-    config.change_to_configuration(7)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
-    experiment(dqn, environment, 1500, config)
-
-    config.change_to_configuration(8)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
-    experiment(dqn, environment, 1500, config)
-
-    names = [["small network 5 observed", "small"], ["big network 5 observed", "big"]]
-    config.nr_observed_agents = 5
-
-    for name in names:
-        for x in range(1, 9):
-            config.exp_folder_name = name[0]
-            config.change_to_configuration(x)
-            world = World(config)
-            world.spawn_things()
-            renderer = Renderer(800, 800, world)
-            environment, model, dqn = prepare_run(world, renderer, config, size=name[1])
-            load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
-            experiment(dqn, environment, 1500, config)
+    for x in range(1, 9):
+        config.change_to_configuration(x)
+        world = World(config)
+        world.spawn_things()
+        renderer = Renderer(800, 800, world)
+        environment, model, dqn = prepare_run(world, renderer, config)
+        run(dqn, environment, 100000, 5, config.run_name, config)
+        #load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        #experiment(dqn, environment, 1500, config)
 
 
     '''

@@ -13,7 +13,7 @@ class Config:
 
         # World
         # The number of observed agents does not include itself or the predator
-        self.nr_observed_agents = 2
+        self.nr_observed_agents = 5
         self.nr_of_boids = 19      # on top of The One
         self.predator_present = True
         self.grouped_spawn = False
@@ -24,8 +24,8 @@ class Config:
         # Gather data every gather_frequency ticks
         # for exp gather every 100
         # for training gather every 1000
-        self.record_frequency = 1000
-        self.exp_folder_name = None
+        self.record_frequency = None
+        self.exp_folder_name = "big network 5 observed"
 
         # Boid
         # faster is 0.0383

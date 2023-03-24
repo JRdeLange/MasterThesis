@@ -14,6 +14,13 @@ import os
 
 def main():
 
+    record = reader.construct_records("raw_exps/__exp small network 2 observed/2D_rec_20_total_boids_slower_short_chase.txt")
+    clustering = clusterer.cluster(record)
+    clusters = clusterer.clustering_to_list_of_lists(clustering)
+
+    print(clusters)
+
+    return
     folder = "exps/small network 0 observed"
     for filename in os.listdir(folder):
         file = folder + "/" + filename

@@ -81,3 +81,39 @@ def plot_points(points_lists):
     plt.xlim([-1, 1])
     plt.ylim([-1, 1])
     plt.show()
+
+
+def plot_data(data):
+    # Create figure and axes
+    fig, ax = plt.subplots()
+
+    # Set limits for the axes
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+
+    # Iterate over each inner list and plot the data
+    for i, inner_list in enumerate(data):
+        # If the inner list is empty, skip it
+        if not inner_list:
+            continue
+
+        # Get the color for this inner list
+        color = f'C{i % 10}'  # Use a different color for each inner list
+
+        # Iterate over each point in the inner list and plot an arrow
+        for point in inner_list:
+            pos_x, pos_y, dir_vec_x, dir_vec_y = point
+
+            # Calculate the length of the arrow
+            length = 0.1
+
+            # Normalize the direction vector
+            dir_vec = np.array([dir_vec_x, dir_vec_y])
+            dir_vec /= np.linalg.norm(dir_vec)
+
+            # Plot the arrow
+            ax.arrow(pos_x, pos_y, dir_vec[0] * length, dir_vec[1] * length,
+                     head_width=0.05, head_length=0.1, fc=color, ec=color)
+
+    # Show the plot
+    plt.show()

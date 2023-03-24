@@ -92,13 +92,16 @@ def load(dqn, folder, name):
     print("data/" + str(folder) + "/" + str(name))
     dqn.load_weights("data/" + str(folder) + "/" + str(name))
 
-def experiment(dqn, environment, episodes, config):
+def experiment(dqn, environment, episodes, config, folder_prefix=""):
     config.record_frequency = 100
     dqn.test(environment, nb_episodes=episodes, visualize=False, nb_max_episode_steps=10000)
-    environment.save_record("__exp " + config.exp_folder_name, config.run_name)
+    environment.save_record(folder_prefix + "__exp " + config.exp_folder_name, config.run_name)
 
 def main():
     config = Config(0)
+
+    config.exp_folder_name = "small network 5 observed"
+    config.nr_observed_agents = 5
 
     for x in range(1, 9):
         config.change_to_configuration(x)
@@ -106,10 +109,73 @@ def main():
         world.spawn_things()
         renderer = Renderer(800, 800, world)
         environment, model, dqn = prepare_run(world, renderer, config)
-        run(dqn, environment, 100000, 5, config.run_name, config)
-        #load(dqn, "_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
-        #experiment(dqn, environment, 1500, config)
+        # run(dqn, environment, 100000, 5, config.run_name, config)
+        load(dqn, "set 1/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 1/")
 
+        load(dqn, "set 2/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 2/")
+
+        load(dqn, "set 3/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 3/")
+
+    config.exp_folder_name = "small network 2 observed"
+    config.nr_observed_agents = 2
+
+    for x in range(1, 9):
+        config.change_to_configuration(x)
+        world = World(config)
+        world.spawn_things()
+        renderer = Renderer(800, 800, world)
+        environment, model, dqn = prepare_run(world, renderer, config)
+        # run(dqn, environment, 100000, 5, config.run_name, config)
+        load(dqn, "set 1/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 1/")
+
+        load(dqn, "set 2/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 2/")
+
+        load(dqn, "set 3/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 3/")
+
+
+    config.exp_folder_name = "small network 1 observed"
+    config.nr_observed_agents = 1
+
+    for x in range(1, 9):
+        config.change_to_configuration(x)
+        world = World(config)
+        world.spawn_things()
+        renderer = Renderer(800, 800, world)
+        environment, model, dqn = prepare_run(world, renderer, config)
+        # run(dqn, environment, 100000, 5, config.run_name, config)
+        load(dqn, "set 1/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 1/")
+
+        load(dqn, "set 2/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 2/")
+
+        load(dqn, "set 3/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 3/")
+
+    config.exp_folder_name = "small network 0 observed"
+    config.nr_observed_agents = 0
+
+    for x in range(1, 9):
+        config.change_to_configuration(x)
+        world = World(config)
+        world.spawn_things()
+        renderer = Renderer(800, 800, world)
+        environment, model, dqn = prepare_run(world, renderer, config)
+        # run(dqn, environment, 100000, 5, config.run_name, config)
+        load(dqn, "set 1/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 1/")
+
+        load(dqn, "set 2/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 2/")
+
+        load(dqn, "set 3/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
+        experiment(dqn, environment, 1500, config, "set 3/")
 
     '''
     config.change_to_configuration(1)

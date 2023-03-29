@@ -83,6 +83,22 @@ def plot_points(points_lists):
     plt.show()
 
 
+def plot_arrows(data):
+    fig, ax = plt.subplots()
+    ax.set_xlim([-1, 1])
+    ax.set_ylim([-1, 1])
+    ax.set_aspect(1)
+    for i, sublist in enumerate(data):
+        color = colors[i]
+        for point in sublist:
+            xy = point[0]
+            theta = point[1]
+            dx = np.cos(theta) * 0.001
+            dy = np.sin(theta) * 0.001
+            ax.arrow(xy[0], xy[1], dx, dy, head_width=0.04, head_length=0.07, fc=color, ec=color, color=color)
+    plt.show()
+
+
 def plot_data(data):
     # Create figure and axes
     fig, ax = plt.subplots()

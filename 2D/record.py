@@ -13,7 +13,8 @@ class Record:
         self.slices.append(episode_slice)
 
     def boid_eaten(self):
-        self.slices[-1].boid_eaten()
+        if len(self.slices) > 0:
+            self.slices[-1].boid_eaten()
 
     def save_to_file(self, folder, name, config):
         if not os.path.exists("data/" + folder):

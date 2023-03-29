@@ -1,0 +1,9 @@
+0
+{'run_name': '2D_rec_10_total_boids_slower_short_chase', 'annealing': True, 'annealing_start': 0.2, 'annealing_end': 0.002, 'nr_observed_agents': 0, 'nr_of_boids': 9, 'predator_present': True, 'grouped_spawn': False, 'predator_halting': False, 'record_keeping': True, 'record_frequency': 100, 'exp_folder_name': 'small network 0 observed', 'boid_speed': 0.0283, 'boid_color': (0.8, 0.8, 0.8, 1), 'boid_turning_speed': 1.5707963267948966, 'predator_speed': 0.0333, 'predator_speed_slow': 0.0333, 'predator_speed_fast': 0.0533, 'predator_lunging': False, 'predator_lunge_speed': 0.013, 'predator_lunge_distance': 0.1, 'predator_turning_speed': 0.7853981633974483, 'predator_color': (0.8, 0.2, 0.2, 1), 'predator_confusion': True, 'predator_confusion_distance': 0.4, 'predator_confusion_threshold': 2, 'predator_chase_time': 10, 'predator_halt_time': 0, 'predator_eating_distance': 0.06666, 'height': 800, 'width': 800, 'graphics': True}
+tick
+boids eaten
+predator position
+predator rotation
+agent positions (and)
+agent rotations (interleaved)
+----

@@ -9,6 +9,47 @@ import scipy.stats as stats
 import pingouin
 import numpy as np
 
+def stats_for_slice(slice):
+    sum_size_of_clusters = 0
+    all_cluster_sizes = []
+    total_nr_of_clusters = 0
+    sum_pos_deviation = 0
+    all_pos_deviations = []
+    sum_rot_deviation = 0
+    all_rot_deviations = []
+    sum_boids_eaten = 0
+
+    clustering = clusterer.cluster(slice.boids_pos)
+    clusters_pos = clusterer.clustering_to_list_of_lists(clustering, slice.boids_pos)
+    clusters_rot = clusterer.clustering_to_list_of_lists(clustering, slice.boids_rotation)
+
+    print("-----")
+
+    # things to calculate
+    for idx in range(1, len(clusters_pos)):
+        total_nr_of_clusters += 1
+
+        # avg size of clusters
+        cluster_size = len(clusters_pos[idx])
+        sum_size_of_clusters += cluster_size
+        all_cluster_sizes.append(cluster_size)
+        # avg pos deviation within clusters
+        pos_deviation = average_pos_deviation(clusters_pos[idx])
+        sum_pos_deviation += pos_deviation
+        all_pos_deviations.append(average_pos_deviation(clusters_pos[idx]))
+
+        # avg rot deviation within clusters
+        rot_deviation = average_rot_deviation(clusters_rot[idx])
+        sum_rot_deviation += rot_deviation
+        all_rot_deviations.append(rot_deviation)
+
+        sum_boids_eaten += slice.boids_eaten
+
+        print(idx, cluster_size, pos_deviation, rot_deviation)
+
+
+
+
 def construct_experiment_analysis_file(name, output_folder, output_file_name):
     record = reader.construct_records(name)
 

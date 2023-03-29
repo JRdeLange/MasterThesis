@@ -12,15 +12,18 @@ def cluster(data):
     clustering = DBSCAN(eps=eps, min_samples=min_samples, metric=metric).fit(data)
     return clustering
 
-def clustering_to_list_of_lists(clustering, data):
+def clustering_to_list_of_lists(clustering, pos_data, rot_data=None):
     labels = clustering.labels_
     n_clusters = labels.max() + 2
     clusters = []
 
     for x in range(n_clusters):
         clusters.append([])
-    for idx, point in enumerate(data):
-        clusters[labels[idx]+1].append(point)
+    for idx, point in enumerate(pos_data):
+        new_entry = point
+        if rot_data:
+            new_entry = [point, rot_data[idx]]
+        clusters[labels[idx]+1].append(new_entry)
 
     return clusters
 

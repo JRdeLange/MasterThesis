@@ -54,6 +54,10 @@ def construct_experiment_analysis_file(name):
     print(total_nr_of_clusters)
 
     # Things to calculate after the fact
+    # avgs
+    avg_cluster_size = sum_size_of_clusters / total_nr_of_clusters
+    avg_pos_deviation = sum_pos_deviation / total_nr_of_clusters
+    avg_rot_deviation = sum_rot_deviation / total_nr_of_clusters
 
     # Standard deviations
     cluster_size_std_dev = stats.tstd(all_cluster_sizes)
@@ -64,12 +68,15 @@ def construct_experiment_analysis_file(name):
         "sum_size_of_clusters": sum_size_of_clusters,
         "all_cluster_sizes": all_cluster_sizes,
         "cluster_size_std_dev": cluster_size_std_dev,
+        "avg_cluster_size": avg_cluster_size,
         "total_nr_of_clusters": total_nr_of_clusters,
         "sum_pos_deviation": sum_pos_deviation,
         "all_pos_deviations": all_pos_deviations,
+        "avg_pos_deviation" : avg_pos_deviation,
         "pos_deviation_std_dev": pos_deviation_std_dev,
         "sum_rot_deviation": sum_rot_deviation,
         "all_rot_deviations": all_rot_deviations,
+        "avg_rot_deviation": avg_rot_deviation,
         "rot_deviation_std_dev": rot_deviation_std_dev,
         "sum_boids_eaten": sum_boids_eaten
     }

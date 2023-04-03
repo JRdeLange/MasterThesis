@@ -12,7 +12,39 @@ import json
 import os
 
 
+def ingest_all():
+    nr_neighbours = [0, 1, 2, 5]
+    for nr in nr_neighbours:
+        folder = "/__exp small network " + str(nr) + " observed"
+        analysis.mass_ingest_experiment("./raw_exps/set 1" + folder, "./exps/set 1" + folder)
+        analysis.mass_ingest_experiment("./raw_exps/set 1 2" + folder, "./exps/set 1 2" + folder)
+        analysis.mass_ingest_experiment("./raw_exps/set 2" + folder, "./exps/set 2" + folder)
+        analysis.mass_ingest_experiment("./raw_exps/set 3" + folder, "./exps/set 3" + folder)
+
+
+def print_data(folder, ready_for_table=False):
+    # folder = "exps/set 1 2/__exp small network 5 observed"
+    for filename in os.listdir(folder):
+        file = folder + "/" + filename
+        file = open(file)
+        data = json.load(file)
+        if ready_for_table:
+            print("{}\t{}\t{:.3f} ({:.3f})\t{:.3f} ({:.3f})\t{:.3f} ({:.3f})".format(data["sum_boids_eaten"], data["total_nr_of_clusters"],
+                                                                data["avg_cluster_size"], data["cluster_size_std_dev"], data["avg_pos_deviation"],
+                                                                data["pos_deviation_std_dev"],
+                                                                data["avg_rot_deviation"],
+                                                                data["rot_deviation_std_dev"]).replace(".", ","))
+        else:
+            print("{}\t{}\t{:,}\t{:,}\t{:,}\t{:,}\t{:,}".format(data["sum_boids_eaten"], data["total_nr_of_clusters"],
+                                                                data["avg_cluster_size"], data["avg_pos_deviation"],
+                                                                data["pos_deviation_std_dev"],
+                                                                data["avg_rot_deviation"],
+                                                                data["rot_deviation_std_dev"]).replace(".", ","))
+
+
+
 def main():
+    analysis.compile_best()
 
     '''
     record = reader.construct_records("raw_exps/__exp small network 0 observed/2D_rec_20_total_boids_slower_short_chase.txt")
@@ -25,15 +57,6 @@ def main():
         clusters = clusterer.clustering_to_list_of_lists(clustering, positions, rotations)
 
         utils.plot_arrows(clusters)'''
-
-
-    folder = "exps/set 2/small network 5 observed"
-    for filename in os.listdir(folder):
-        file = folder + "/" + filename
-        file = open(file)
-        data = json.load(file)
-        print(data["sum_boids_eaten"], data["total_nr_of_clusters"], data["avg_cluster_size"], data["avg_pos_deviation"], data["pos_deviation_std_dev"], data["avg_rot_deviation"], data["rot_deviation_std_dev"])
-
 
     '''# Read in file
     analysis.construct_experiment_analysis_file("2D_rec_10_total_boids4.txt")

@@ -9,6 +9,68 @@ import scipy.stats as stats
 import pingouin
 import numpy as np
 
+
+class Set:
+
+    def __init__(self):
+        self.observed_5 = {}
+        self.observed_2 = {}
+        self.observed_1 = {}
+        self.observed_0 = {}
+
+    def add_experiment(self, observed, key, value):
+        if observed == "5":
+            self.observed_5[key] = value
+        if observed == "2":
+            self.observed_2[key] = value
+        if observed == "1":
+            self.observed_1[key] = value
+        if observed == "0":
+            self.observed_0[key] = value
+
+
+def load_set(folder):
+    set = Set()
+    for observed in os.listdir(folder):
+        inner_folder = folder + "/" + observed
+        for permutation in os.listdir(inner_folder):
+            # extract nr observed boids
+            nr_observed_boids = observed[20]
+            file = inner_folder + "/" + permutation
+            exp = json.load(open(file))
+            set.add_experiment(nr_observed_boids, permutation[:-5], exp)
+    return set
+
+
+def compile_best():
+    # Get all results loaded
+    set_1 = load_set("exps/set 1")
+    set_2 = load_set("exps/set 2")
+    set_3 = load_set("exps/set 3")
+
+    best_set = Set()
+
+    # Select best
+
+    # For each nr of observed boids
+    for observed in vars(set_1):
+        # For each of the 8 permutations
+        for permutation in getattr(set_1, observed).keys():
+            # For each of the three sets determine the best
+            best = None
+            for set in [set_1, set_2, set_3]:
+                sum_eaten_boids = getattr(set, observed)[permutation]["sum_boids_eaten"]
+                if best is None or sum_eaten_boids < best["sum_boids_eaten"]:
+                    best = getattr(set, observed)[permutation]
+            print(best["sum_boids_eaten"])
+            # Add it to the best set
+            getattr(best_set, observed)[permutation] = best
+
+    # DONE UP TO HERE
+
+    # print and save
+
+
 def stats_for_slice(slice):
     sum_size_of_clusters = 0
     all_cluster_sizes = []

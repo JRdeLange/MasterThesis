@@ -111,3 +111,21 @@ def plot_points(points_lists):
     ax.set_ylim([-1, 1])
     ax.set_zlim([-1, 1])
     plt.show()
+
+def plot_arrows_3d(data):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlim([-1, 1])
+    ax.set_ylim([-1, 1])
+    ax.set_zlim([-1, 1])
+    ax.set_box_aspect([1, 1, 1])
+    for i, sublist in enumerate(data):
+        color = colors[i]
+        for point in sublist:
+            xyz = point[0]
+            length = 0.1
+            u = point[1][0] * length
+            v = point[1][1] * length
+            w = point[1][2] * length
+            ax.quiver(xyz[0], xyz[1], xyz[2], u, v, w, color=color, arrow_length_ratio=1.5)
+    plt.show()

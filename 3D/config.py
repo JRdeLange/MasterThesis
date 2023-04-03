@@ -58,10 +58,25 @@ class Config:
         self.change_to_configuration(configuration)
 
     def change_to_configuration(self, configuration):
-        if configuration == 2:
-            self.run_name = "2D_rec_10_total_boids_short_chase"
+        if configuration == 1:
+            self.run_name = "3D_20_total_boids"
             self.boid_speed = 0.0333
-            self.nr_of_boids = 9
+            self.nr_of_boids = 20
+            self.predator_chase_time = 20
+        if configuration == 2:
+            self.run_name = "3D_20_total_boids_short_chase"
+            self.boid_speed = 0.0333
+            self.nr_of_boids = 20
+            self.predator_chase_time = 10
+        if configuration == 3:
+            self.run_name = "3D_20_total_boids_slower"
+            self.boid_speed = 0.0233
+            self.nr_of_boids = 20
+            self.predator_chase_time = 20
+        if configuration == 4:
+            self.run_name = "3D_20_total_boids_slower_short_chase"
+            self.boid_speed = 0.0283
+            self.nr_of_boids = 20
             self.predator_chase_time = 10
 
 

@@ -73,15 +73,16 @@ def annealing(dqn, config, i, times, steps):
                                       start, end, 0, steps)
     print(start, end)
 
-def run(dqn, environment, steps, times, name, config):
+def run(dqn, environment, steps, times, name, config, auto_save=True):
     config.record_frequency = 1000
     for i in range(times):
         # Do annealing
         if config.annealing:
             annealing(dqn, config, i, times, steps)
         dqn.fit(environment, nb_steps=steps, visualize=False, verbose=2, nb_max_episode_steps=10000)
-        save(dqn, name, name + str(steps * (i + 1)) + ".h5f")
-        environment.save_record(name, name + str(i))
+        if auto_save:
+            save(dqn, name, name + str(steps * (i + 1)) + ".h5f")
+            environment.save_record(name, name + str(i))
 
 def save(dqn, folder, name):
     if not os.path.exists("data/" + folder):
@@ -100,6 +101,21 @@ def experiment(dqn, environment, episodes, config, folder_prefix=""):
 def main():
     config = Config(0)
 
+    config.change_to_configuration(3)
+
+    for nr in range(1, 4):
+        for obs in [0, 1, 2, 5]:
+            config.nr_observed_agents = obs
+
+            world = World(config)
+            world.spawn_things()
+            renderer = Renderer(800, 800, world)
+            environment, model, dqn = prepare_run(world, renderer, config)
+            run(dqn, environment, 100000, 5, None, config, auto_save=False)
+            save(dqn, "redo_conf_3/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "500000.h5f")
+            environment.save_record("redo_conf_3/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "4")
+
+    '''
     config.exp_folder_name = "small network 5 observed"
     config.nr_observed_agents = 5
 
@@ -112,7 +128,7 @@ def main():
         renderer = Renderer(800, 800, world)
         load(dqn, "set 2/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
         experiment(dqn, environment, 1500, config, "set 2/")
-    '''
+    
     config.exp_folder_name = "small network 1 observed"
     config.nr_observed_agents = 1
 

@@ -113,7 +113,7 @@ def main():
             renderer = Renderer(800, 800, world)
             environment, model, dqn = prepare_run(world, renderer, config)
 
-            load(dqn, "set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "500000.h5f")
+            load(dqn, "set " + str(nr) + "/_small network " + str(obs) + " observed/2D_rec_10_total_boids_slower", config.run_name + "500000.h5f")
             experiment(dqn, environment, 1500, config, "set " + str(nr) + "/")
 
     '''

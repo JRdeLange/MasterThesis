@@ -71,7 +71,7 @@ class Config:
             self.predator_chase_time = 10
         if configuration == 3:
             self.run_name = "2D_rec_10_total_boids_slower"
-            self.boid_speed = 0.0233
+            self.boid_speed = 0.0283
             self.nr_of_boids = 9
             self.predator_chase_time = 20
         if configuration == 4:

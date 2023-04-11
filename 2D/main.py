@@ -90,7 +90,7 @@ def save(dqn, folder, name):
     dqn.save_weights("data/" + folder + "/" + name, overwrite=True)
 
 def load(dqn, folder, name):
-    print("Now loading data/" + str(folder) + "/" + str(name))
+    print("data/" + str(folder) + "/" + str(name))
     dqn.load_weights("data/" + str(folder) + "/" + str(name))
 
 def experiment(dqn, environment, episodes, config, folder_prefix=""):
@@ -105,16 +105,28 @@ def main():
 
     for nr in range(1, 4):
         for obs in [0, 1, 2, 5]:
+            config.exp_folder_name = "small network " + str(obs) + " observed"
             config.nr_observed_agents = obs
-            config.exp_folder_name = f"small network {obs} observed"
 
             world = World(config)
             world.spawn_things()
             renderer = Renderer(800, 800, world)
             environment, model, dqn = prepare_run(world, renderer, config)
-
-            load(dqn, "set " + str(nr) + "/_small network " + str(obs) + " observed/2D_rec_10_total_boids_slower", config.run_name + "500000.h5f")
+            load(dqn, "set " + str(nr) + "/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
             experiment(dqn, environment, 1500, config, "set " + str(nr) + "/")
+    '''
+    for nr in range(1, 4):
+        for obs in [0, 1, 2, 5]:
+            config.nr_observed_agents = obs
+
+            world = World(config)
+            world.spawn_things()
+            renderer = Renderer(800, 800, world)
+            environment, model, dqn = prepare_run(world, renderer, config)
+            run(dqn, environment, 100000, 5, None, config, auto_save=False)
+            save(dqn, "redo_conf_3/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "500000.h5f")
+            environment.save_record("redo_conf_3/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "4")
+    '''
 
     '''
     config.exp_folder_name = "small network 5 observed"

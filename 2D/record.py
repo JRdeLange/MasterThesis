@@ -19,6 +19,8 @@ class Record:
     def save_to_file(self, folder, name, config):
         if not os.path.exists("data/" + folder):
             os.mkdir("data/" + folder)
+
+        print("saving at " + "data/" + folder + "/" + str(name)+".txt")
         with open("data/" + folder + "/" + str(name)+".txt", "w") as f:
 
             # Header with nr of slices, config and data layout

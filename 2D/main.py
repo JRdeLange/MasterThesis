@@ -103,7 +103,7 @@ def main():
 
     config.change_to_configuration(3)
 
-    for nr in range(1, 4):
+    for nr in range(1, 2):
         for obs in [0, 1, 2, 5]:
             config.exp_folder_name = "small network " + str(obs) + " observed"
             config.nr_observed_agents = obs
@@ -113,7 +113,7 @@ def main():
             renderer = Renderer(800, 800, world)
             environment, model, dqn = prepare_run(world, renderer, config)
             load(dqn, "set " + str(nr) + "/_" + config.exp_folder_name + "/" + config.run_name, config.run_name + "500000.h5f")
-            experiment(dqn, environment, 1500, config, "set " + str(nr) + "/")
+            experiment(dqn, environment, 1500, config, "set " + str(nr) + "/" + "set " + str(nr) + "/")
     '''
     for nr in range(1, 4):
         for obs in [0, 1, 2, 5]:

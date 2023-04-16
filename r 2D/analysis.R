@@ -10,6 +10,7 @@ for (x in c(1, 2, 3)) {
 
 
 folders <- c("exps/set 1", "exps/set 2", "exps/set 3")
+folders <- c("exps/best set")
 
 # create an empty dataframe to hold all the data
 all_data <- data.frame()
@@ -32,7 +33,11 @@ for (folder in folders) {
       data <- jsonlite::fromJSON(json_file, simplifyDataFrame = TRUE)
       data <- data.frame(data[c("all_cluster_sizes", "all_pos_deviations", "all_rot_deviations")])
       # add the columns with specified values
-      nr_neighbors_observed <- as.numeric(stringr::str_extract_all(subfolder, "[0-9]+")[[1]])[2]
+      if (folder == "exps/best set") {
+        nr_neighbors_observed <- as.numeric(stringr::str_extract_all(subfolder, "[0-9]+")[[1]])[1]
+      } else {
+        nr_neighbors_observed <- as.numeric(stringr::str_extract_all(subfolder, "[0-9]+")[[1]])[2]
+      }
       data$nr_of_boids <- ifelse(grepl("10", json_file), 10, 20)
       data$chase_time <- ifelse(grepl("short", json_file), 10, 20)
       data$boid_speed <- ifelse(grepl("slower", json_file), 0.0283, 0.0333)
@@ -42,6 +47,12 @@ for (folder in folders) {
     }
   }
 }
+
+
+
+
+
+
 
 
 

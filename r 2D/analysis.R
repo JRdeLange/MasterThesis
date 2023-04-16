@@ -30,6 +30,7 @@ for (folder in folders) {
     for (json_file in json_files) {
       # read in the JSON file as a dataframe
       data <- jsonlite::fromJSON(json_file, simplifyDataFrame = TRUE)
+      data <- data.frame(data[c("all_cluster_sizes", "all_pos_deviations", "all_rot_deviations")])
       # add the columns with specified values
       nr_neighbors_observed <- as.numeric(stringr::str_extract_all(subfolder, "[0-9]+")[[1]])[2]
       data$nr_of_boids <- ifelse(grepl("10", json_file), 10, 20)
@@ -43,8 +44,6 @@ for (folder in folders) {
 }
 
 
-
-all_data = empty
 
 for folders exps/+[set 1, set 2, set 3]:
   for folders __exp small network+[0/1/2/5]+observed:

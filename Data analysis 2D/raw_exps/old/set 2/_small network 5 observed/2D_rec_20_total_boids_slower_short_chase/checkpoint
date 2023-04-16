@@ -1,0 +1,2 @@
+model_checkpoint_path: "5_observed_2D_rec_20_total_boids_slower_short_chase500000.h5f"
+all_model_checkpoint_paths: "5_observed_2D_rec_20_total_boids_slower_short_chase500000.h5f"

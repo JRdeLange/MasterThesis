@@ -42,9 +42,17 @@ def print_data(folder, ready_for_table=False):
                                                                 data["rot_deviation_std_dev"]).replace(".", ","))
 
 
+def print_entire_set(set_folder):
+    for observed_folder in os.listdir(set_folder):
+        folder = set_folder + "/" + observed_folder
+        print_data(folder, ready_for_table=True)
+        print("")
+        print("")
+
 
 def main():
-    analysis.compile_best()
+    folder = "exps/best set/__exp small network 5 observed"
+    print_data(folder, ready_for_table=False)
 
     '''
     record = reader.construct_records("raw_exps/__exp small network 0 observed/2D_rec_20_total_boids_slower_short_chase.txt")

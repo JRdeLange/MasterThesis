@@ -1,0 +1,2 @@
+model_checkpoint_path: "2D_rec_10_total_boids500000.h5f"
+all_model_checkpoint_paths: "2D_rec_10_total_boids500000.h5f"

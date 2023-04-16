@@ -21,3 +21,33 @@ model <- aov(dep_vars_mat ~ indep_var1 + indep_var2 + indep_var3, data=indep_var
 model <- aov(dep_vars[,4] ~ indep_var1 + indep_var2 + indep_var3, data=indep_vars)
 
 summary(model) # Print the results
+
+
+
+
+########################
+# peudocode for final algorithm
+
+for folders exps/+[set 1, set 2, set 3]:
+  for folders __exp small network+[0/1/2/5]+observed:
+  for all files:
+  read in file as json
+add columns "nr_of_boids", "chase_time", "nr_neighbors_observed" and "boid_speed"
+set all values of nr_neighbors_observed to 0/1/2/5 depending on the folder we are currently in
+
+if filename contains "10":
+  set all values of nr_of_boids to 10
+else
+  set all values to 20
+
+if filename contains "slower":
+  set all values of boid speed to 0.0283
+else
+  set all values to 0.0333
+
+if filename contains "short":
+  set all values of chase_time to 10
+else
+  set all values to 20
+
+append the data to all_data

@@ -62,13 +62,23 @@ def compile_best():
                 sum_eaten_boids = getattr(set, observed)[permutation]["sum_boids_eaten"]
                 if best is None or sum_eaten_boids < best["sum_boids_eaten"]:
                     best = getattr(set, observed)[permutation]
-            print(best["sum_boids_eaten"])
             # Add it to the best set
             getattr(best_set, observed)[permutation] = best
 
-    # DONE UP TO HERE
-
     # print and save
+    folder_dict = {"observed_0": "__exp small network 0 observed",
+                   "observed_1": "__exp small network 1 observed",
+                   "observed_2": "__exp small network 2 observed",
+                   "observed_5": "__exp small network 5 observed"}
+
+    for observed in vars(best_set):
+        for permutation in getattr(best_set, observed).keys():
+            save_folder = "exps/best set/" + folder_dict[observed]
+            if not os.path.exists(save_folder):
+                os.mkdir(save_folder)
+            with open(save_folder + "/" + permutation + ".json", "w") as f:
+                json.dump(getattr(best_set, observed)[permutation], f)
+
 
 
 def stats_for_slice(slice):

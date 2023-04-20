@@ -48,6 +48,39 @@ for (folder in folders) {
   }
 }
 
+# Fit the MANOVA model using aov()
+dep_vars_mat <- as.matrix(all_data[,c("all_cluster_sizes", "all_pos_deviations", "all_rot_deviations")]) # Convert dependent variables to matrix
+indep_vars <- all_data[,c("nr_of_boids", "chase_time", "boid_speed", "nr_neighbors_observed")] # Extract independent variables
+model <- aov(dep_vars_mat ~ nr_of_boids + chase_time + boid_speed + nr_neighbors_observed, data=indep_vars)
+
+summary(model) # Print the results
+coefficients(model)
+
+
+
+
+
+# Experiment reliability
+library(Hotelling)
+
+obs <- c("__exp small network 0 observed", "__exp small network 1 observed", "__exp small network 2 observed", "__exp small network 5 observed")
+p_values <- c()
+
+for (observed in obs){
+  path_a <- paste("exps/set 1/", observed, sep="")
+  path_b <- paste("exps/set 1 2/", observed, sep="") 
+  json_files <- list.files(path_a, pattern = "*.json", full.names = FALSE)
+  for (json_file in json_files){
+    data_a = jsonlite::fromJSON(paste(path_a, "/", json_file, sep=""))
+    data_a <- data.frame(data_a[c("all_cluster_sizes", "all_pos_deviations", "all_rot_deviations")])
+    
+    data_b = jsonlite::fromJSON(paste(path_b, "/", json_file, sep=""))
+    data_b <- data.frame(data_b[c("all_cluster_sizes", "all_pos_deviations", "all_rot_deviations")])
+    
+    print(paste(observed, json_file, hotelling.test(data_a, data_b)$stats$p, hotelling.test(data_a, data_b)$stats$statistic, sep = "-----"))
+    
+  }
+}
 
 
 

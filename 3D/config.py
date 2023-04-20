@@ -59,10 +59,12 @@ class Config:
 
     def change_to_configuration(self, configuration):
         if configuration == 1:
-            self.run_name = "3D_20_total_boids"
+            self.run_name = "3D_flocking_stimulator"
             self.boid_speed = 0.0333
             self.nr_of_boids = 20
-            self.predator_chase_time = 20
+            self.predator_chase_time = 10
+            self.nr_observed_agents = 2
+
         if configuration == 2:
             self.run_name = "3D_20_total_boids_short_chase"
             self.boid_speed = 0.0333

@@ -63,11 +63,12 @@ def annealing(dqn, config, i, times, steps):
                                       start, end, 0, steps)
 
 def run(dqn, environment, steps, times, name, config):
+    config.record_frequency = 100
     for i in range(times):
         # Do annealing
         if config.annealing:
             annealing(dqn, config, i, times, steps)
-        dqn.fit(environment, nb_steps=steps, visualize=True, verbose=2, nb_max_episode_steps=10000)
+        dqn.fit(environment, nb_steps=steps, visualize=False, verbose=2, nb_max_episode_steps=10000)
         save(dqn, name, name + str(steps * (i + 1)) + ".h5f")
         environment.save_record(name, name + str(i))
 
@@ -88,15 +89,19 @@ def experiment(dqn, environment, episodes, config):
 
 def main():
     config = Config(0)
+    config.change_to_configuration(1)
     world = World(config)
     world.spawn_things()
     renderer = Renderer(800, 800, world)
     environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 500, 5, "test", config)
+    run(dqn, environment, 100000, 10, config.run_name, config)
 
 
 if __name__ == '__main__':
     main()
+
+
+
     '''config = Config(0)
     world = World(config)
     # world.spawn_boids(config.nr_of_boids)

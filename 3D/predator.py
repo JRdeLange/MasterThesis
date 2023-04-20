@@ -26,6 +26,8 @@ class Predator:
         self.id = 0
         self.history = History()
         self.history.fill(self.pos)
+        self.speed = config.predator_speed
+        self.counter = 0
 
     # Find closest boid and change direction to it
     def find_target(self):
@@ -68,14 +70,17 @@ class Predator:
         self.rotation = change.apply(self.rotation)
 
     def move(self):
+        self.counter += 1
         if self.halt_counter:
             self.halt_counter -= 1
             return
+        if self.counter == 80:
+            self.speed = self.config.predator_speed_fast
+        if self.counter == 100:
+            self.speed = self.config.predator_speed_slow
+            self.counter = 0
         self.find_target()
-        if self.config.predator_lunging and self.target.dist < self.config.predator_lunge_distance:
-            self.pos += self.forward * self.config.predator_lunge_speed
-        else:
-            self.pos += self.forward * self.config.predator_speed
+        self.pos += self.forward * self.speed
         self.wrap()
         self.eat()
         self.history.add(self.pos)

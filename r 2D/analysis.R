@@ -1,14 +1,5 @@
 library(jsonlite)
 
-# Initialize empty data frame to store all data
-all_data <- data.frame()
-
-
-for (x in c(1, 2, 3)) {
-  print(x)
-}
-
-
 folders <- c("exps/set 1", "exps/set 2", "exps/set 3")
 folders <- c("exps/best set")
 
@@ -58,14 +49,19 @@ coefficients(model)
 
 
 
+# Assumptions
+
+library(mvnormtest)
+mshapiro.test(all_data[, 1:3])
+
 
 
 # Experiment reliability
 library(Hotelling)
 
 obs <- c("__exp small network 0 observed", "__exp small network 1 observed", "__exp small network 2 observed", "__exp small network 5 observed")
-p_values <- c()
 
+p_values <- c()
 for (observed in obs){
   path_a <- paste("exps/set 1/", observed, sep="")
   path_b <- paste("exps/set 1 2/", observed, sep="") 
@@ -77,14 +73,18 @@ for (observed in obs){
     data_b = jsonlite::fromJSON(paste(path_b, "/", json_file, sep=""))
     data_b <- data.frame(data_b[c("all_cluster_sizes", "all_pos_deviations", "all_rot_deviations")])
     
-    print(paste(observed, json_file, hotelling.test(data_a, data_b)$stats$p, hotelling.test(data_a, data_b)$stats$statistic, sep = "-----"))
+    test = hotelling.test(data_a, data_b)
+    print(paste(observed, json_file, test$pval, paste(test$stats$df[1], test$stats$df[2]), test$stats$statistic, sep = "-----"))
+    p_values <- append(p_values, test$pval)
+    
     
   }
 }
 
-
-
-
+# https://stats.stackexchange.com/questions/168181/r-package-for-combining-p-values-using-fishers-or-stouffers-method
+# https://search.r-project.org/CRAN/refmans/Tmisc/html/fisherp.html
+library(Tmisc)
+fisherp(p_values)
 
 
 

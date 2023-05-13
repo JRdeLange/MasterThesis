@@ -109,7 +109,8 @@ class Environment(gym.Env):
         info = {}
 
         if (self.world.overarching_tick % self.config.record_frequency == 0) and self.config.record_keeping:
-            self.keep_record()
+            if self.dqn_agent.training or (not self.dqn_agent.training and self.world.overarching_tick < self.stop_exp_at_tick):
+                self.keep_record()
 
         if not self.dqn_agent.training:
             if self.world.overarching_tick == self.stop_exp_at_tick:

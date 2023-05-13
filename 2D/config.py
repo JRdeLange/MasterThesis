@@ -48,7 +48,7 @@ class Config:
         self.predator_confusion_distance = .4  # from OG, .2 of space
         self.predator_confusion_threshold = 2
         self.predator_chase_time = 20
-        self.predator_halt_time = 0
+        self.predator_halt_time = 20
         self.predator_eating_distance = 0.06666  # from OG, eat if distance is less than 2/60th of space
 
         # Window

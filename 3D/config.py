@@ -17,7 +17,7 @@ class Config:
         self.nr_of_boids = 39      # on top of The One
         self.predator_present = True
         self.grouped_spawn = False
-        self.predator_halting = False
+        self.predator_halting = True
 
         # Collect data for analysis
         self.record_keeping = True

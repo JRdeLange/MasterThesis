@@ -80,21 +80,26 @@ def save(dqn, folder, name):
 def load(dqn, folder, name):
     dqn.load_weights("data/" + str(folder) + "/" + str(name))
 
-def experiment(dqn, environment, episodes, config):
+def experiment(dqn, environment, episodes, config, folder_prefix=""):
+    config.record_frequency = 100
     dqn.policy = EpsGreedyQPolicy(eps=config.annealing_end)
     dqn.test(environment, nb_episodes=episodes, visualize=False, nb_max_episode_steps=10000)
     name = "exp_" + config.run_name
-    save(dqn, config.run_name, config.run_name + ".h5f")
-    environment.save_record(name, name)
+    environment.save_record(name + folder_prefix, name)
 
 def main():
     config = Config(0)
     config.change_to_configuration(1)
-    world = World(config)
-    world.spawn_things()
-    renderer = Renderer(800, 800, world)
-    environment, model, dqn = prepare_run(world, renderer, config)
-    run(dqn, environment, 100000, 10, config.run_name, config)
+    for obs in ["2", "3"]:
+        world = World(config)
+        world.spawn_things()
+        renderer = Renderer(800, 800, world)
+        environment, model, dqn = prepare_run(world, renderer, config)
+        network = "set " + obs + "/3D_flocking_stimulator/"
+        load(dqn, network, "3D_flocking_stimulator1000000.h5f")
+        experiment(dqn, environment, 2000, config, " set " + obs)
+
+    #run(dqn, environment, 100000, 10, config.run_name, config)
 
 
 if __name__ == '__main__':

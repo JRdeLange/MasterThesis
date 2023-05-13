@@ -101,8 +101,8 @@ def experiment(dqn, environment, episodes, config, folder_prefix=""):
 def main():
     config = Config(0)
 
-    config.change_to_configuration(3)
-
+    config.change_to_configuration(6)
+    '''
     for nr in range(1, 2):
         for obs in [0, 1, 2, 5]:
             config.exp_folder_name = "small network " + str(obs) + " observed"
@@ -116,17 +116,20 @@ def main():
             experiment(dqn, environment, 1500, config, "set " + str(nr) + "/" + "set " + str(nr) + "/")
     '''
     for nr in range(1, 4):
-        for obs in [0, 1, 2, 5]:
+        for obs in [2]:
             config.nr_observed_agents = obs
-
+            config.exp_folder_name = "small network " + str(obs) + " observed"
             world = World(config)
             world.spawn_things()
             renderer = Renderer(800, 800, world)
             environment, model, dqn = prepare_run(world, renderer, config)
-            run(dqn, environment, 100000, 5, None, config, auto_save=False)
-            save(dqn, "redo_conf_3/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "500000.h5f")
-            environment.save_record("redo_conf_3/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "4")
-    '''
+            load(dqn, "predator_halting/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "500000.h5f")
+            experiment(dqn, environment, 1500, config, "predator_halting/set " + str(nr) + "/")
+
+            #run(dqn, environment, 100000, 5, None, config, auto_save=False)
+            #save(dqn, "predator_halting/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "500000.h5f")
+            #environment.save_record("predator_halting/set " + str(nr) + "/_small network " + str(obs) + " observed", config.run_name + "4")
+
 
     '''
     config.exp_folder_name = "small network 5 observed"

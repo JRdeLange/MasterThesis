@@ -20,13 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8927ec2f-7e25-4b18-a7f3-ed0bcff07d63" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../2D/.idea/3D rewrite.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../2D/.idea/3D rewrite.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2D/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../2D/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2D/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/../2D/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2D/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../2D/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/3D_flocking_stimulator/3D_flocking_stimulator100000_ticks.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/3D_flocking_stimulator/3D_flocking_stimulator100000_ticks.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -107,21 +102,21 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1256" height="332" key="GridCell.Tab.0.bottom" timestamp="1682427623949">
+    <state width="2522" height="328" key="GridCell.Tab.0.bottom" timestamp="1683982291238">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state width="1256" height="332" key="GridCell.Tab.0.bottom/0.0.2560.1050@0.0.2560.1050" timestamp="1682427623949" />
-    <state width="1256" height="332" key="GridCell.Tab.0.center" timestamp="1682427623949">
+    <state width="2522" height="328" key="GridCell.Tab.0.bottom/0.0.2560.1050@0.0.2560.1050" timestamp="1683982291238" />
+    <state width="2522" height="328" key="GridCell.Tab.0.center" timestamp="1683982291238">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state width="1256" height="332" key="GridCell.Tab.0.center/0.0.2560.1050@0.0.2560.1050" timestamp="1682427623949" />
-    <state width="1256" height="332" key="GridCell.Tab.0.left" timestamp="1682427623949">
+    <state width="2522" height="328" key="GridCell.Tab.0.center/0.0.2560.1050@0.0.2560.1050" timestamp="1683982291238" />
+    <state width="2522" height="328" key="GridCell.Tab.0.left" timestamp="1683982291238">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state width="1256" height="332" key="GridCell.Tab.0.left/0.0.2560.1050@0.0.2560.1050" timestamp="1682427623949" />
-    <state width="1256" height="332" key="GridCell.Tab.0.right" timestamp="1682427623949">
+    <state width="2522" height="328" key="GridCell.Tab.0.left/0.0.2560.1050@0.0.2560.1050" timestamp="1683982291238" />
+    <state width="2522" height="328" key="GridCell.Tab.0.right" timestamp="1683982291238">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state width="1256" height="332" key="GridCell.Tab.0.right/0.0.2560.1050@0.0.2560.1050" timestamp="1682427623949" />
+    <state width="2522" height="328" key="GridCell.Tab.0.right/0.0.2560.1050@0.0.2560.1050" timestamp="1683982291238" />
   </component>
 </project>

@@ -90,12 +90,12 @@ def experiment(dqn, environment, episodes, config, folder_prefix=""):
 def main():
     config = Config(0)
     config.change_to_configuration(1)
-    for obs in ["2", "3"]:
+    for obs in ["1 2"]:
         world = World(config)
         world.spawn_things()
         renderer = Renderer(800, 800, world)
         environment, model, dqn = prepare_run(world, renderer, config)
-        network = "set " + obs + "/3D_flocking_stimulator/"
+        network = "set " + "1" + "/3D_flocking_stimulator/"
         load(dqn, network, "3D_flocking_stimulator1000000.h5f")
         experiment(dqn, environment, 2000, config, " set " + obs)
 
